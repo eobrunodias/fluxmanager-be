@@ -15,7 +15,20 @@ import { SettingsModule } from './settings/settings.module';
 import { CashflowModule } from './cashflow/cashflow.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, OrdersModule, OrderItemsModule, StockModule, PaymentsModule, ClientsModule, ProductsModule, SuppliersModule, CategoriesModule, SettingsModule, CashflowModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    OrdersModule,
+    OrderItemsModule,
+    StockModule,
+    PaymentsModule,
+    ClientsModule,
+    ProductsModule,
+    SuppliersModule,
+    CategoriesModule,
+    SettingsModule,
+    CashflowModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
