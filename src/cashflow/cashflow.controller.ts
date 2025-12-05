@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
-import { CashflowService } from './cashflow.service';
-import { CreateCashflowDto } from './dto/create-cashflow.dto';
-import { UpdateCashflowDto } from './dto/update-cashflow.dto';
+} from "@nestjs/common";
+import { CashflowService } from "./cashflow.service";
+import { CreateCashflowDto } from "./dto/create-cashflow.dto";
+import { UpdateCashflowDto } from "./dto/update-cashflow.dto";
 
-@Controller('cashflow')
+@Controller("cashflow")
 export class CashflowController {
   constructor(private readonly cashflowService: CashflowService) {}
 
@@ -25,21 +25,21 @@ export class CashflowController {
     return this.cashflowService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.cashflowService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateCashflowDto: UpdateCashflowDto,
   ) {
     return this.cashflowService.update(+id, updateCashflowDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.cashflowService.remove(+id);
   }
 }

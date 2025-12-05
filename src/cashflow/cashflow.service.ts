@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCashflowDto } from './dto/create-cashflow.dto';
-import { UpdateCashflowDto } from './dto/update-cashflow.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateCashflowDto } from "./dto/create-cashflow.dto";
+import { UpdateCashflowDto } from "./dto/update-cashflow.dto";
 
 @Injectable()
 export class CashflowService {
   create(createCashflowDto: CreateCashflowDto) {
-    return 'This action adds a new cashflow';
+    return "This action adds a new cashflow";
   }
 
   findAll() {

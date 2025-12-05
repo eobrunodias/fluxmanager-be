@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
-import { StockService } from './stock.service';
-import { CreateStockDto } from './dto/create-stock.dto';
-import { UpdateStockDto } from './dto/update-stock.dto';
+} from "@nestjs/common";
+import { StockService } from "./stock.service";
+import { CreateStockDto } from "./dto/create-stock.dto";
+import { UpdateStockDto } from "./dto/update-stock.dto";
 
-@Controller('stock')
+@Controller("stock")
 export class StockController {
   constructor(private readonly stockService: StockService) {}
 
@@ -25,18 +25,18 @@ export class StockController {
     return this.stockService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.stockService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStockDto: UpdateStockDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateStockDto: UpdateStockDto) {
     return this.stockService.update(+id, updateStockDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.stockService.remove(+id);
   }
 }
