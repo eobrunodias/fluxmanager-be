@@ -4,6 +4,8 @@
 /build
 
 .vscode
+TODO.md
+*.http
 
 # Logs
 logs
