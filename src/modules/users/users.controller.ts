@@ -17,7 +17,9 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const newCreated = this.usersService.create(createUserDto);
+    if (newCreated) return newCreated;
+    return `User not found`;
   }
 
   @Get()
