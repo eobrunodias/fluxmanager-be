@@ -1,10 +1,5 @@
+import { Currency } from "src/common/enums";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
-export enum Currency {
-  BRL = "BRL",
-  USD = "USD",
-  EUR = "EUR",
-}
 
 @Entity()
 export class Setting {

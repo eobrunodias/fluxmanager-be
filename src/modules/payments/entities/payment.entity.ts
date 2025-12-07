@@ -1,3 +1,4 @@
+import { PaymentMethod, PaymentStatus } from "src/common/enums";
 import {
   Column,
   CreateDateColumn,
@@ -5,26 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-
-export enum PaymentMethod {
-  PIX = "pix",
-  CREDIT = "credit",
-  DEBIT = "debit",
-  CASH = "cash",
-  BANK_TRANSFER = "bank_transfer",
-  BOLETO = "boleto",
-  PAYPAL = "paypal",
-  APPLE_PAY = "apple_pay",
-  GOOGLE_PAY = "google_pay",
-}
-
-export enum PaymentStatus {
-  PENDING = "pending",
-  COMPLETED = "completed",
-  FAILED = "failed",
-  CANCELED = "canceled",
-  REFUNDED = "refunded",
-}
 
 @Entity()
 export class Payment {

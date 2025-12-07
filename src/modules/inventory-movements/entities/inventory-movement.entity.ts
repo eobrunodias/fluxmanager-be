@@ -1,10 +1,5 @@
+import { InventoryMovementType } from "src/common/enums";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
-export enum InventoryMovementType {
-  IN = "IN",
-  OUT = "OUT",
-  ADJUSTMENT = "ADJUSTMENT",
-}
 
 @Entity()
 export class InventoryMovement {

@@ -1,10 +1,5 @@
+import { OrderItemUnitPrice } from "src/common/enums";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
-export enum OrderItemUnitPrice {
-  REAL = "real",
-  DOLAR = "dolar",
-  EURO = "euro",
-}
 
 @Entity()
 export class OrderItem {
@@ -25,5 +20,5 @@ export class OrderItem {
     type: "enum",
     enum: "OrderItemUnitPrice",
   })
-  unitPrice: string;
+  unitPrice: OrderItemUnitPrice;
 }

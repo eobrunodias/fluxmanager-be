@@ -1,15 +1,10 @@
+import { CashflowType } from "src/common/enums";
 import {
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
 } from "typeorm";
-
-export enum CashflowType {
-  INCOME = "income",
-  EXPENSE = "expense",
-  TRANSFER = "transfer",
-}
 
 @Entity()
 export class Cashflow {
