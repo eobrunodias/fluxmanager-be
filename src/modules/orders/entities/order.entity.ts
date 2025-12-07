@@ -18,15 +18,15 @@ export class Order {
   @Column({ name: "user_id" })
   userId: string;
 
-  @Column({ type: "enum", enum: OrderStatus })
+  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
-  total: string;
+  total: number;
 
   @CreateDateColumn({ name: "created_at" })
-  createdAt: string;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
-  updatedAt: string;
+  updatedAt: Date;
 }
