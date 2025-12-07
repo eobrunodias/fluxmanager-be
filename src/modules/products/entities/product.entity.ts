@@ -22,7 +22,7 @@ export class Product {
   barcode: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
-  price: string;
+  price: number;
 
   @Column({ length: 255 })
   description: string;
@@ -34,8 +34,8 @@ export class Product {
   supplierId: string;
 
   @CreateDateColumn({ name: "created_at" })
-  createdAt: string;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
-  updatedAt: string;
+  updatedAt: Date;
 }
