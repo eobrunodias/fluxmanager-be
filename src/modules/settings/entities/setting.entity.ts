@@ -19,5 +19,5 @@ export class Setting {
   currency: Currency;
 
   @Column({ length: 50 })
-  timezone: Date;
+  timezone: string;
 }
