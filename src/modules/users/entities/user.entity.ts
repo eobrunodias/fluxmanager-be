@@ -24,9 +24,9 @@ export class User {
   @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

@@ -1,19 +1,26 @@
-import { Column, Entity } from "typeorm";
+import { Column, CreateDateColumn, Entity, UpdateDateColumn } from "typeorm";
+import { PrimaryGeneratedColumn } from "typeorm/browser";
 
 @Entity()
 export class Client {
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @Column({ length: 100 })
   name: string;
-  @Column()
+
+  @Column({ length: 100, unique: true })
   email: string;
-  @Column()
+
+  @Column({ length: 20 })
   phone: string;
-  @Column()
-  adress: string;
-  @Column()
-  created_at: Date;
-  @Column()
-  updated_at: Date;
+
+  @Column({ length: 200 })
+  address: string;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 }
