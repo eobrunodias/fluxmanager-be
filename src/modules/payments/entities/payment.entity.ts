@@ -15,14 +15,14 @@ export class Payment {
   @Column({ name: "order_id" })
   orderId: string;
 
-  @Column({ type: "enum", enum: "PaymentMethod" })
+  @Column({ type: "enum", enum: PaymentMethod })
   method: PaymentMethod;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
   amount: number;
 
-  @Column({ type: "enum", enum: PaymentStatus })
-  status: string;
+  @Column({ type: "enum", enum: PaymentStatus, default: PaymentStatus.PENDING })
+  status: PaymentStatus;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
