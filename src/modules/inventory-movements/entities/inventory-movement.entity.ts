@@ -12,7 +12,7 @@ export class InventoryMovement {
   @Column({ type: "enum", enum: "InventoryMovementType" })
   type: InventoryMovementType;
 
-  @Column({ type: "real", precision: 5 })
+  @Column({ type: "int", precision: 5 })
   quantity: number;
 
   @Column()
