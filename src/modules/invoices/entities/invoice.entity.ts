@@ -13,7 +13,7 @@ export class Invoice {
   @Column({ name: "order_id" })
   orderId: string;
 
-  @Column({ name: "pdf_url" })
+  @Column({ name: "pdf_url", length: 255 })
   pdfUrl: string;
 
   @CreateDateColumn({ name: "created_at" })
