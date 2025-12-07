@@ -12,15 +12,15 @@ export class StockService {
     return `This action returns all stock`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} stock`;
   }
 
-  update(id: number, updateStockDto: UpdateStockDto) {
+  update(id: string, updateStockDto: UpdateStockDto) {
     return `This action updates a #${id} stock`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} stock`;
   }
 }

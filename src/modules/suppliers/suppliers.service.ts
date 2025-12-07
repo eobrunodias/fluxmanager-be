@@ -12,15 +12,15 @@ export class SuppliersService {
     return `This action returns all suppliers`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} supplier`;
   }
 
-  update(id: number, updateSupplierDto: UpdateSupplierDto) {
+  update(id: string, updateSupplierDto: UpdateSupplierDto) {
     return `This action updates a #${id} supplier`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} supplier`;
   }
 }

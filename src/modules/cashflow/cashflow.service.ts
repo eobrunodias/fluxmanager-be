@@ -12,15 +12,15 @@ export class CashflowService {
     return `This action returns all cashflow`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} cashflow`;
   }
 
-  update(id: number, updateCashflowDto: UpdateCashflowDto) {
+  update(id: string, updateCashflowDto: UpdateCashflowDto) {
     return `This action updates a #${id} cashflow`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} cashflow`;
   }
 }
