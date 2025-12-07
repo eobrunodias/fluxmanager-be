@@ -30,6 +30,6 @@ export class User {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @Column({ default: false })
+  @Column({ default: false, name: "is_active" })
   isActive: boolean;
 }

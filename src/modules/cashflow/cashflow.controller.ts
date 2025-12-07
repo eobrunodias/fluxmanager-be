@@ -27,7 +27,7 @@ export class CashflowController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.cashflowService.findOne(+id);
+    return this.cashflowService.findOne(id);
   }
 
   @Patch(":id")
@@ -35,11 +35,11 @@ export class CashflowController {
     @Param("id") id: string,
     @Body() updateCashflowDto: UpdateCashflowDto,
   ) {
-    return this.cashflowService.update(+id, updateCashflowDto);
+    return this.cashflowService.update(id, updateCashflowDto);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.cashflowService.remove(+id);
+    return this.cashflowService.remove(id);
   }
 }
