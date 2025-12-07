@@ -1,4 +1,3 @@
-import { OrderItemUnitPrice } from "src/common/enums";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -9,16 +8,12 @@ export class OrderItem {
   @Column({ name: "order_id" })
   orderId: string;
 
-  @Column({ unique: true, name: "product_id" })
+  @Column({ name: "product_id" })
   productId: string;
 
-  @Column({ type: "int", precision: 5 })
+  @Column({ type: "int" })
   quantity: number;
 
-  @Column({
-    name: "unit_price",
-    type: "enum",
-    enum: "OrderItemUnitPrice",
-  })
-  unitPrice: OrderItemUnitPrice;
+  @Column({ name: "unit_price", type: "decimal", precision: 10, scale: 2 })
+  unitPrice: number;
 }
