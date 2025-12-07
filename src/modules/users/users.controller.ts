@@ -16,10 +16,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    const newCreated = this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const newCreated = await this.usersService.create(createUserDto);
     if (newCreated) return newCreated;
-    return `User not found`;
   }
 
   @Get()
@@ -29,16 +28,16 @@ export class UsersController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id);
   }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }
