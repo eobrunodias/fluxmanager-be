@@ -5,18 +5,29 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
+export enum CashflowType {
+  INCOME = "income",
+  EXPENSE = "expense",
+  TRANSFER = "transfer",
+}
+
 @Entity()
 export class Cashflow {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column({ enum: ["type1, type2, type3"] })
-  type: number;
-  @Column()
-  orderId: number;
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Column({ type: "enum", enum: CashflowType })
+  type: CashflowType;
+
+  @Column({ name: "order_id" })
+  orderId: string;
+
+  @Column({ length: 255 })
   description: string;
-  @Column()
+
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   value: number;
-  @CreateDateColumn()
+
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 }

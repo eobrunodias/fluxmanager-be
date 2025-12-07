@@ -1,25 +1,41 @@
-import { Column, Entity } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class Product {
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @Column({ length: 100 })
   name: string;
-  @Column()
+
+  // Stock Keeping Unit
+  @Column({ length: 50, unique: true })
   sku: string;
-  @Column()
+
+  @Column({ length: 30, unique: true })
   barcode: string;
-  @Column()
+
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   price: string;
-  @Column()
+
+  @Column({ length: 255 })
   description: string;
-  @Column()
+
+  @Column({ name: "category_id" })
   categoryId: string;
-  @Column()
+
+  @Column({ name: "supplier_id" })
   supplierId: string;
-  @Column()
+
+  @CreateDateColumn({ name: "created_at" })
   createdAt: string;
-  @Column()
+
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: string;
 }

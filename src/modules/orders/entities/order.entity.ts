@@ -1,19 +1,41 @@
-import { Column, Entity } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+
+export enum OrderStatus {
+  PENDING = "pending",
+  CONFIRMED = "confirmed",
+  PREPARING = "preparing",
+  SHIPPED = "shipped",
+  DELIVERED = "delivered",
+  CANCELED = "canceled",
+  RETURNED = "returned",
+}
 
 @Entity()
 export class Order {
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @Column({ name: "client_id" })
   clientId: string;
-  @Column()
+
+  @Column({ name: "user_id" })
   userId: string;
-  @Column()
-  status: string;
-  @Column()
+
+  @Column({ type: "enum", enum: OrderStatus })
+  status: OrderStatus;
+
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   total: string;
-  @Column()
+
+  @CreateDateColumn({ name: "created_at" })
   createdAt: string;
-  @Column()
+
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: string;
 }

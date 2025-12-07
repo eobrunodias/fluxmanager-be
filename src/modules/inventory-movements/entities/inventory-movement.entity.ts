@@ -1,19 +1,31 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+export enum InventoryMovementType {
+  IN = "IN",
+  OUT = "OUT",
+  ADJUSTMENT = "ADJUSTMENT",
+}
 
 @Entity()
 export class InventoryMovement {
-  @Column()
-  id: number;
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Column({ unique: true, name: "product_id" })
   productId: string;
-  @Column()
-  type: string;
-  @Column()
+
+  @Column({ type: "enum", enum: "InventoryMovementType" })
+  type: InventoryMovementType;
+
+  @Column({ type: "real", precision: 5 })
   quantity: number;
+
   @Column()
   note: string;
-  @Column()
+
+  @Column({ name: "order_id" })
   orderId: string;
-  @Column()
+
+  @Column({ name: "created_at" })
   createdAt: string;
 }

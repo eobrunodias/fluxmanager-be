@@ -1,13 +1,21 @@
-import { Column, Entity } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class Stock {
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @Column({ unique: true, name: "product_id" })
   productId: string;
-  @Column()
+
+  @Column({ type: "int", precision: 5 })
   quantity: number;
-  @Column()
+
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

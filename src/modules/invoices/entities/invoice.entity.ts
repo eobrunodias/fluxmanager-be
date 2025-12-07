@@ -1,13 +1,21 @@
-import { Column, Entity } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class Invoice {
-  @Column()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @Column({ name: "order_id" })
   orderId: string;
-  @Column()
+
+  @Column({ name: "pdf_url" })
   pdfUrl: string;
-  @Column()
+
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 }
