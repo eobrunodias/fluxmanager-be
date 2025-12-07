@@ -8,18 +8,18 @@ import {
 } from "class-validator";
 
 export class CreateUserDto {
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @Length(10, 100)
   name: string;
 
-  @IsEmail()
   @IsNotEmpty()
+  @IsEmail()
   @MaxLength(100)
   email: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @MinLength(6)
   password: string;
 }
