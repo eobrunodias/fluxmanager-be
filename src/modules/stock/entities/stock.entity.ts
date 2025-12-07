@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -13,8 +14,11 @@ export class Stock {
   @Column({ unique: true, name: "product_id" })
   productId: string;
 
-  @Column({ type: "int", precision: 5 })
+  @Column({ type: "int", default: 0 })
   quantity: number;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;

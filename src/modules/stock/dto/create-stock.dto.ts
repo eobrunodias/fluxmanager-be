@@ -1,1 +1,10 @@
-export class CreateStockDto {}
+import { IsInt, IsUUID, Min } from "class-validator";
+
+export class CreateStockDto {
+  @IsUUID()
+  productId: string;
+
+  @IsInt()
+  @Min(1)
+  quantity: number;
+}
