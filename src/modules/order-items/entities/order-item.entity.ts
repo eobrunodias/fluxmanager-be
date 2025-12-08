@@ -15,9 +15,6 @@ export class OrderItem {
   @Column({ name: "order_id" })
   orderId: string;
 
-  @Column({ name: "product_id" })
-  productId: string;
-
   @Column({ type: "int" })
   quantity: number;
 
