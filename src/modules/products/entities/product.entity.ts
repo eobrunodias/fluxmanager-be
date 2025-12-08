@@ -1,4 +1,5 @@
 import { Category } from "src/modules/categories/entities/category.entity";
+import { Supplier } from "src/modules/suppliers/entities/supplier.entity";
 import {
   Column,
   CreateDateColumn,
@@ -30,9 +31,6 @@ export class Product {
   @Column({ length: 255 })
   description: string;
 
-  @Column({ name: "supplier_id" })
-  supplierId: string;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
@@ -42,4 +40,8 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: "category_id" })
   category: Category;
+
+  @ManyToOne(() => Supplier, (supplier) => supplier.products)
+  @JoinColumn({ name: "supplier_id" })
+  supplier: Supplier;
 }
