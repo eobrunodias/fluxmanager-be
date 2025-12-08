@@ -1,4 +1,5 @@
 import { Category } from "src/modules/categories/entities/category.entity";
+import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
 import { Stock } from "src/modules/stock/entities/stock.entity";
 import { Supplier } from "src/modules/suppliers/entities/supplier.entity";
 import {
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -49,4 +51,7 @@ export class Product {
 
   @OneToOne(() => Stock, (stock) => stock.product)
   stock: Stock;
+
+  @OneToMany(() => OrderItem, (ordemItem) => ordemItem.products)
+  ordemItem: OrderItem;
 }

@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "src/modules/products/entities/product.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class OrderItem {
@@ -16,4 +23,8 @@ export class OrderItem {
 
   @Column({ name: "unit_price", type: "decimal", precision: 10, scale: 2 })
   unitPrice: number;
+
+  @ManyToOne(() => Product, (product) => product.ordemItem)
+  @JoinColumn()
+  products: Product[];
 }
