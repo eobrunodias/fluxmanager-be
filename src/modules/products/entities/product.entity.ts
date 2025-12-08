@@ -1,4 +1,5 @@
 import { Category } from "src/modules/categories/entities/category.entity";
+import { Stock } from "src/modules/stock/entities/stock.entity";
 import { Supplier } from "src/modules/suppliers/entities/supplier.entity";
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -44,4 +46,7 @@ export class Product {
   @ManyToOne(() => Supplier, (supplier) => supplier.products)
   @JoinColumn({ name: "supplier_id" })
   supplier: Supplier;
+
+  @OneToOne(() => Stock, (stock) => stock.product)
+  stock: Stock;
 }

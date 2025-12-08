@@ -1,7 +1,10 @@
+import { Product } from "src/modules/products/entities/product.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -22,4 +25,8 @@ export class Stock {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToOne(() => Product, (product) => product.stock)
+  @JoinColumn()
+  product: Product;
 }
