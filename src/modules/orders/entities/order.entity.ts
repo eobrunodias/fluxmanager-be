@@ -1,5 +1,6 @@
 import { OrderStatus } from "src/common/enums";
 import { Client } from "src/modules/clients/entities/client.entity";
+import { Invoice } from "src/modules/invoices/entities/invoice.entity";
 import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
 import { Payment } from "src/modules/payments/entities/payment.entity";
 import { User } from "src/modules/users/entities/user.entity";
@@ -10,6 +11,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -46,4 +48,7 @@ export class Order {
 
   @OneToMany(() => Payment, (payment) => payment.orders)
   payment: Payment;
+
+  @OneToOne(() => Invoice, (invoice) => invoice.order)
+  invoice: Invoice;
 }
