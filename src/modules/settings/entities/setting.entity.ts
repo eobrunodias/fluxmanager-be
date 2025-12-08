@@ -1,13 +1,17 @@
 import { Currency } from "src/common/enums";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/modules/users/entities/user.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class Setting {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
 
   @Column({ name: "store_name", length: 100 })
   storeName: string;
@@ -20,4 +24,8 @@ export class Setting {
 
   @Column({ length: 50 })
   timezone: string;
+
+  @OneToOne(() => User, (user) => user.setting)
+  @JoinColumn({ name: "user_id" })
+  user: User;
 }

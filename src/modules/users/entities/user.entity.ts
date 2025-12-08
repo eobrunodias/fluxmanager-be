@@ -1,8 +1,10 @@
 import { UserRole } from "src/common/enums/user-role.enum";
+import { Setting } from "src/modules/settings/entities/setting.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -32,4 +34,7 @@ export class User {
 
   @Column({ default: false, name: "is_active" })
   isActive: boolean;
+
+  @OneToOne(() => Setting, (setting) => setting.user)
+  setting: Setting;
 }
