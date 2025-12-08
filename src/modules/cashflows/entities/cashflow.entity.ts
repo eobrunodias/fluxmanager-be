@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -17,9 +17,6 @@ export class Cashflow {
   @Column({ type: "enum", enum: CashflowType })
   type: CashflowType;
 
-  @Column({ name: "order_id" })
-  orderId: string;
-
   @Column({ length: 255 })
   description: string;
 
@@ -29,7 +26,7 @@ export class Cashflow {
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @OneToMany(() => Order, (order) => order.cashflow)
-  @JoinColumn()
-  orders: Order[];
+  @ManyToOne(() => Order, (order) => order.cashflows)
+  @JoinColumn({ name: "order_id" })
+  order: Order[];
 }

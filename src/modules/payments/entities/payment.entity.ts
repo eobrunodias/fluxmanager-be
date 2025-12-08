@@ -30,7 +30,7 @@ export class Payment {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @ManyToOne(() => Order, (order) => order.payment)
-  @JoinColumn()
-  orders: Order[];
+  @ManyToOne(() => Order, (order) => order.payments)
+  @JoinColumn({ name: "order_id" })
+  order: Order;
 }

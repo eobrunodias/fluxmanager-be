@@ -19,11 +19,11 @@ export class OrderItem {
   @Column({ name: "unit_price", type: "decimal", precision: 10, scale: 2 })
   unitPrice: number;
 
-  @ManyToOne(() => Product, (product) => product.ordemItem)
-  @JoinColumn()
-  products: Product[];
+  @ManyToOne(() => Product, (product) => product.ordemItems)
+  @JoinColumn({ name: "product_id" })
+  product: Product;
 
-  @ManyToOne(() => Order, (order) => order.ordemItem)
-  @JoinColumn()
-  orders: Order[];
+  @ManyToOne(() => Order, (order) => order.ordemItems)
+  @JoinColumn({ name: "order_id" })
+  order: Order;
 }

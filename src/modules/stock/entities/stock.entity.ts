@@ -14,9 +14,6 @@ export class Stock {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ unique: true, name: "product_id" })
-  productId: string;
-
   @Column({ type: "int", default: 0 })
   quantity: number;
 
@@ -27,6 +24,6 @@ export class Stock {
   updatedAt: Date;
 
   @OneToOne(() => Product, (product) => product.stock)
-  @JoinColumn()
+  @JoinColumn({ name: "product_id" })
   product: Product;
 }

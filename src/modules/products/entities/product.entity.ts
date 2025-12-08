@@ -53,12 +53,9 @@ export class Product {
   @OneToOne(() => Stock, (stock) => stock.product)
   stock: Stock;
 
-  @OneToMany(() => OrderItem, (ordemItem) => ordemItem.products)
-  ordemItem: OrderItem;
+  @OneToMany(() => OrderItem, (ordemItem) => ordemItem.product)
+  ordemItems: OrderItem[];
 
-  @OneToMany(
-    () => InventoryMovement,
-    (inventoryMovement) => inventoryMovement.products,
-  )
-  inventoryMovement: InventoryMovement;
+  @OneToMany(() => InventoryMovement, (im) => im.product)
+  inventoryMovements: InventoryMovement[];
 }

@@ -20,6 +20,6 @@ export class Invoice {
   createdAt: Date;
 
   @OneToOne(() => Order, (order) => order.invoice)
-  @JoinColumn()
+  @JoinColumn({ name: "order_id" })
   order: Order;
 }
