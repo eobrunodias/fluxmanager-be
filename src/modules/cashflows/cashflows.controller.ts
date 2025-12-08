@@ -7,16 +7,16 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
-import { CashflowService } from "./cashflow.service";
-import { CreateCashflowDto } from "./dto/create-cashflow.dto";
-import { UpdateCashflowDto } from "./dto/update-cashflow.dto";
+import { CashflowsService } from "./cashflows.service";
+import { CreateCashflowsDto } from "./dto/create-cashflows.dto";
+import { UpdateCashflowsDto } from "./dto/update-cashflows.dto";
 
 @Controller("cashflow")
-export class CashflowController {
-  constructor(private readonly cashflowService: CashflowService) {}
+export class CashflowsController {
+  constructor(private readonly cashflowService: CashflowsService) {}
 
   @Post()
-  create(@Body() createCashflowDto: CreateCashflowDto) {
+  create(@Body() createCashflowDto: CreateCashflowsDto) {
     return this.cashflowService.create(createCashflowDto);
   }
 
@@ -33,7 +33,7 @@ export class CashflowController {
   @Patch(":id")
   update(
     @Param("id") id: string,
-    @Body() updateCashflowDto: UpdateCashflowDto,
+    @Body() updateCashflowDto: UpdateCashflowsDto,
   ) {
     return this.cashflowService.update(id, updateCashflowDto);
   }

@@ -1,8 +1,11 @@
 import { CashflowType } from "src/common/enums";
+import { Order } from "src/modules/orders/entities/order.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -25,4 +28,8 @@ export class Cashflow {
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
+
+  @OneToMany(() => Order, (order) => order.cashflow)
+  @JoinColumn()
+  orders: Order[];
 }

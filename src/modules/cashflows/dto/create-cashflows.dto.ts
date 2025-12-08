@@ -10,7 +10,7 @@ import {
 } from "class-validator";
 import { CashflowType } from "src/common/enums";
 
-export class CreateCashflowDto {
+export class CreateCashflowsDto {
   @IsNotEmpty()
   @IsEnum(CashflowType)
   type: CashflowType;

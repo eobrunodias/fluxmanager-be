@@ -12,7 +12,7 @@ import { ProductsModule } from "../modules/products/products.module";
 import { SuppliersModule } from "../modules/suppliers/suppliers.module";
 import { CategoriesModule } from "../modules/categories/categories.module";
 import { SettingsModule } from "../modules/settings/settings.module";
-import { CashflowModule } from "../modules/cashflow/cashflow.module";
+import { CashflowsModule } from "../modules/cashflows/cashflows.module";
 import { InvoicesModule } from "../modules/invoices/invoices.module";
 import { InventoryMovementsModule } from "../modules/inventory-movements/inventory-movements.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -31,7 +31,7 @@ import { ConfigModule } from "@nestjs/config";
     SuppliersModule,
     CategoriesModule,
     SettingsModule,
-    CashflowModule,
+    CashflowsModule,
     InvoicesModule,
     InventoryMovementsModule,
     ConfigModule.forRoot({

@@ -1,4 +1,5 @@
 import { OrderStatus } from "src/common/enums";
+import { Cashflow } from "src/modules/cashflows/entities/cashflow.entity";
 import { Client } from "src/modules/clients/entities/client.entity";
 import { Invoice } from "src/modules/invoices/entities/invoice.entity";
 import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
@@ -51,4 +52,7 @@ export class Order {
 
   @OneToOne(() => Invoice, (invoice) => invoice.order)
   invoice: Invoice;
+
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.orders)
+  cashflow: Cashflow;
 }
