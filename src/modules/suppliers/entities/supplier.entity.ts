@@ -3,7 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -31,6 +32,7 @@ export class Supplier {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Product, (product) => product.supplier)
+  @ManyToMany(() => Product, (product) => product.suppliers)
+  @JoinTable({ name: "supplier_products" })
   products: Product[];
 }

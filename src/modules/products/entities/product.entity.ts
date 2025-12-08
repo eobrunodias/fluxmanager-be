@@ -8,6 +8,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -46,10 +47,6 @@ export class Product {
   @JoinColumn({ name: "category_id" })
   category: Category;
 
-  @ManyToOne(() => Supplier, (supplier) => supplier.products)
-  @JoinColumn({ name: "supplier_id" })
-  supplier: Supplier;
-
   @OneToOne(() => Stock, (stock) => stock.product)
   stock: Stock;
 
@@ -58,4 +55,7 @@ export class Product {
 
   @OneToMany(() => InventoryMovement, (im) => im.product)
   inventoryMovements: InventoryMovement[];
+
+  @ManyToMany(() => Supplier, (supplier) => supplier.products)
+  suppliers: Supplier[];
 }
