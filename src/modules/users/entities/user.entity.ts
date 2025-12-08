@@ -1,9 +1,11 @@
 import { UserRole } from "src/common/enums/user-role.enum";
+import { Order } from "src/modules/orders/entities/order.entity";
 import { Setting } from "src/modules/settings/entities/setting.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -37,4 +39,7 @@ export class User {
 
   @OneToOne(() => Setting, (setting) => setting.user)
   setting: Setting;
+
+  @OneToMany(() => Order, (order) => order.user)
+  order: Order[];
 }

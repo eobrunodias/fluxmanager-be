@@ -1,8 +1,12 @@
 import { OrderStatus } from "src/common/enums";
+import { Client } from "src/modules/clients/entities/client.entity";
+import { User } from "src/modules/users/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -11,12 +15,6 @@ import {
 export class Order {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ name: "client_id" })
-  clientId: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
 
   @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
@@ -29,4 +27,14 @@ export class Order {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  // Obligatory
+  @ManyToOne(() => Client, (client) => client.orders)
+  @JoinColumn({ name: "client_id" })
+  client: Client;
+
+  // Optional
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: "user_id" })
+  user?: User;
 }
