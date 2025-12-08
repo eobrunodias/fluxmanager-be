@@ -1,7 +1,10 @@
+import { Category } from "src/modules/categories/entities/category.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -27,9 +30,6 @@ export class Product {
   @Column({ length: 255 })
   description: string;
 
-  @Column({ name: "category_id" })
-  categoryId: string;
-
   @Column({ name: "supplier_id" })
   supplierId: string;
 
@@ -38,4 +38,8 @@ export class Product {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: "category_id" })
+  category: Category;
 }
