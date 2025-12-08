@@ -1,6 +1,7 @@
 import { OrderStatus } from "src/common/enums";
 import { Client } from "src/modules/clients/entities/client.entity";
 import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
+import { Payment } from "src/modules/payments/entities/payment.entity";
 import { User } from "src/modules/users/entities/user.entity";
 import {
   Column,
@@ -42,4 +43,7 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.orders)
   ordemItem: OrderItem;
+
+  @OneToMany(() => Payment, (payment) => payment.orders)
+  payment: Payment;
 }

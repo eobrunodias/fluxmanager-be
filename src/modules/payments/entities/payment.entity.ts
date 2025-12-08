@@ -1,8 +1,11 @@
 import { PaymentMethod, PaymentStatus } from "src/common/enums";
+import { Order } from "src/modules/orders/entities/order.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -11,9 +14,6 @@ import {
 export class Payment {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ name: "order_id" })
-  orderId: string;
 
   @Column({ type: "enum", enum: PaymentMethod })
   method: PaymentMethod;
@@ -29,4 +29,8 @@ export class Payment {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @ManyToOne(() => Order, (order) => order.payment)
+  @JoinColumn()
+  orders: Order[];
 }
