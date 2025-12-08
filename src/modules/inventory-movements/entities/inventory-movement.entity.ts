@@ -1,4 +1,5 @@
 import { InventoryMovementType } from "src/common/enums";
+import { Order } from "src/modules/orders/entities/order.entity";
 import { Product } from "src/modules/products/entities/product.entity";
 import {
   Column,
@@ -23,13 +24,14 @@ export class InventoryMovement {
   @Column({ nullable: true })
   note?: string;
 
-  @Column({ name: "order_id" })
-  orderId: string;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @ManyToOne(() => Product, (product) => product.inventoryMovement)
-  @JoinColumn()
-  products: Product[];
+  @ManyToOne(() => Product, (product) => product.inventoryMovements)
+  @JoinColumn({ name: "product_id" })
+  product: Product;
+
+  @ManyToOne(() => Order, (order) => order.inventoryMovements)
+  @JoinColumn({ name: "order_id" })
+  order: Order;
 }

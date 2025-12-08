@@ -1,6 +1,7 @@
 import { OrderStatus } from "src/common/enums";
 import { Cashflow } from "src/modules/cashflows/entities/cashflow.entity";
 import { Client } from "src/modules/clients/entities/client.entity";
+import { InventoryMovement } from "src/modules/inventory-movements/entities/inventory-movement.entity";
 import { Invoice } from "src/modules/invoices/entities/invoice.entity";
 import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
 import { Payment } from "src/modules/payments/entities/payment.entity";
@@ -44,15 +45,18 @@ export class Order {
   @JoinColumn({ name: "user_id" })
   user?: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.orders)
-  ordemItem: OrderItem;
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  ordemItems: OrderItem[];
 
-  @OneToMany(() => Payment, (payment) => payment.orders)
-  payment: Payment;
+  @OneToMany(() => Payment, (payment) => payment.order)
+  payments: Payment[];
 
   @OneToOne(() => Invoice, (invoice) => invoice.order)
   invoice: Invoice;
 
-  @OneToMany(() => Cashflow, (cashflow) => cashflow.orders)
-  cashflow: Cashflow;
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.order)
+  cashflows: Cashflow[];
+
+  @OneToMany(() => InventoryMovement, (im) => im.order)
+  inventoryMovements: InventoryMovement[];
 }
