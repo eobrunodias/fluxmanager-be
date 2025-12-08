@@ -1,4 +1,5 @@
 import { Category } from "src/modules/categories/entities/category.entity";
+import { InventoryMovement } from "src/modules/inventory-movements/entities/inventory-movement.entity";
 import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
 import { Stock } from "src/modules/stock/entities/stock.entity";
 import { Supplier } from "src/modules/suppliers/entities/supplier.entity";
@@ -54,4 +55,10 @@ export class Product {
 
   @OneToMany(() => OrderItem, (ordemItem) => ordemItem.products)
   ordemItem: OrderItem;
+
+  @OneToMany(
+    () => InventoryMovement,
+    (inventoryMovement) => inventoryMovement.products,
+  )
+  inventoryMovement: InventoryMovement;
 }

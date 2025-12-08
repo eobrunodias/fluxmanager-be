@@ -1,8 +1,11 @@
 import { InventoryMovementType } from "src/common/enums";
+import { Product } from "src/modules/products/entities/product.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -10,9 +13,6 @@ import {
 export class InventoryMovement {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ name: "product_id" })
-  productId: string;
 
   @Column({ type: "enum", enum: InventoryMovementType })
   type: InventoryMovementType;
@@ -28,4 +28,8 @@ export class InventoryMovement {
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
+
+  @ManyToOne(() => Product, (product) => product.inventoryMovement)
+  @JoinColumn()
+  products: Product[];
 }
