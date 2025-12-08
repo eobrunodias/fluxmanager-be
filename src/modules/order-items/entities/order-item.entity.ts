@@ -1,3 +1,4 @@
+import { Order } from "src/modules/orders/entities/order.entity";
 import { Product } from "src/modules/products/entities/product.entity";
 import {
   Column,
@@ -12,9 +13,6 @@ export class OrderItem {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ name: "order_id" })
-  orderId: string;
-
   @Column({ type: "int" })
   quantity: number;
 
@@ -24,4 +22,8 @@ export class OrderItem {
   @ManyToOne(() => Product, (product) => product.ordemItem)
   @JoinColumn()
   products: Product[];
+
+  @ManyToOne(() => Order, (order) => order.ordemItem)
+  @JoinColumn()
+  orders: Order[];
 }

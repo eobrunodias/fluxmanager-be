@@ -1,5 +1,6 @@
 import { OrderStatus } from "src/common/enums";
 import { Client } from "src/modules/clients/entities/client.entity";
+import { OrderItem } from "src/modules/order-items/entities/order-item.entity";
 import { User } from "src/modules/users/entities/user.entity";
 import {
   Column,
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -37,4 +39,7 @@ export class Order {
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: "user_id" })
   user?: User;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.orders)
+  ordemItem: OrderItem;
 }
