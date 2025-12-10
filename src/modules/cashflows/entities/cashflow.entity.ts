@@ -28,5 +28,5 @@ export class Cashflow {
 
   @ManyToOne(() => Order, (order) => order.cashflows)
   @JoinColumn({ name: "order_id" })
-  order: Order[];
+  orderId: string;
 }

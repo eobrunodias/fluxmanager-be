@@ -32,5 +32,5 @@ export class Payment {
 
   @ManyToOne(() => Order, (order) => order.payments)
   @JoinColumn({ name: "order_id" })
-  order: Order;
+  orderId: string;
 }

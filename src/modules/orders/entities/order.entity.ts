@@ -38,25 +38,25 @@ export class Order {
   // Obligatory
   @ManyToOne(() => Client, (client) => client.orders)
   @JoinColumn({ name: "client_id" })
-  client: Client;
+  clientId: string;
 
   // Optional
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: "user_id" })
-  user?: User;
+  userId?: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.orderId)
   ordemItems: OrderItem[];
 
-  @OneToMany(() => Payment, (payment) => payment.order)
+  @OneToMany(() => Payment, (payment) => payment.orderId)
   payments: Payment[];
 
-  @OneToOne(() => Invoice, (invoice) => invoice.order)
-  invoice: Invoice;
+  @OneToOne(() => Invoice, (invoice) => invoice.orderId)
+  invoice: string;
 
-  @OneToMany(() => Cashflow, (cashflow) => cashflow.order)
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.orderId)
   cashflows: Cashflow[];
 
-  @OneToMany(() => InventoryMovement, (im) => im.order)
+  @OneToMany(() => InventoryMovement, (im) => im.orderId)
   inventoryMovements: InventoryMovement[];
 }

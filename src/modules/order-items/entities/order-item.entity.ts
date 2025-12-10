@@ -21,9 +21,9 @@ export class OrderItem {
 
   @ManyToOne(() => Product, (product) => product.ordemItems)
   @JoinColumn({ name: "product_id" })
-  product: Product;
+  productId: string;
 
   @ManyToOne(() => Order, (order) => order.ordemItems)
   @JoinColumn({ name: "order_id" })
-  order: Order;
+  orderId: string;
 }

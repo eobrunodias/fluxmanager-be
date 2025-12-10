@@ -27,5 +27,5 @@ export class Setting {
 
   @OneToOne(() => User, (user) => user.setting)
   @JoinColumn({ name: "user_id" })
-  user: User;
+  userId: User;
 }

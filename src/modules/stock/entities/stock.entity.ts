@@ -23,7 +23,7 @@ export class Stock {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToOne(() => Product, (product) => product.stock)
+  @OneToOne(() => Product, (product) => product.stockId)
   @JoinColumn({ name: "product_id" })
-  product: Product;
+  productId: string;
 }
