@@ -3,16 +3,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
   MaxLength,
 } from "class-validator";
 import { Currency } from "src/common/enums";
 
 export class CreateSettingDto {
-  @IsUUID()
-  userId: string;
-
   @IsString()
   @Length(10, 100)
   storeName: string;
