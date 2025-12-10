@@ -2,10 +2,12 @@ import { Currency } from "src/common/enums";
 import { User } from "src/modules/users/entities/user.entity";
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
@@ -24,6 +26,12 @@ export class Setting {
 
   @Column({ length: 50 })
   timezone: string;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   @OneToOne(() => User, (user) => user.setting)
   @JoinColumn({ name: "user_id" })
