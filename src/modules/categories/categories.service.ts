@@ -43,11 +43,38 @@ export class CategoriesService {
     return category;
   }
 
-  update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    if (!id) throw new BadRequestException("Id is required");
+    if (!updateCategoryDto)
+      throw new BadRequestException("Category data update invalid");
+
+    const category = await this.repository.findOneBy({ id });
+    if (!category) throw new BadRequestException("Category not found");
+
+    const updatedCategory = {
+      ...category,
+      ...updateCategoryDto,
+    };
+
+    const preloadedCategory = await this.repository.preload(updatedCategory);
+    if (!preloadedCategory)
+      throw new ConflictException("Category not preloaded");
+
+    const savedCategory = await this.repository.save(preloadedCategory);
+    if (!savedCategory) throw new ConflictException("Category not updated");
+
+    return savedCategory;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    if (!id) throw new BadRequestException("Id is required");
+
+    const category = await this.repository.findOneBy({ id });
+    if (!category) throw new BadRequestException("Category not found");
+
+    const categoryRemoved = await this.repository.remove(category);
+    if (!categoryRemoved) throw new ConflictException("Category not removed");
+
+    return categoryRemoved;
   }
 }

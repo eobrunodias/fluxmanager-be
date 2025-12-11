@@ -53,6 +53,10 @@ export class SettingsService {
   }
 
   async update(id: string, updateSettingDto: UpdateSettingDto) {
+    if (!id) throw new BadRequestException("Id is required");
+    if (!updateSettingDto)
+      throw new BadRequestException("Setting data update invalid");
+
     const setting = await this.repository.findOneBy({ id });
     if (!setting) throw new BadRequestException("Setting not found");
 
