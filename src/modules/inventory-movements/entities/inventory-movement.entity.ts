@@ -33,5 +33,5 @@ export class InventoryMovement {
 
   @ManyToOne(() => Order, (order) => order.inventoryMovements)
   @JoinColumn({ name: "order_id" })
-  orderId: string;
+  order: Order;
 }

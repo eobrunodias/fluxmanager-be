@@ -3,10 +3,11 @@ import { OrderStatus } from "src/common/enums";
 
 export class CreateOrderDto {
   @IsUUID()
-  clientId: string;
+  client: string;
 
   @IsUUID()
-  userId: string;
+  @IsOptional()
+  user?: string;
 
   @IsEnum(OrderStatus)
   @IsOptional()

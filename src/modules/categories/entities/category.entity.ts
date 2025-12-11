@@ -1,5 +1,12 @@
 import { Product } from "src/modules/products/entities/product.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class Category {
@@ -11,6 +18,12 @@ export class Category {
 
   @Column({ length: 255 })
   description: string;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   @OneToMany(() => Product, (product) => product.categoryId)
   products: Product[];
