@@ -20,28 +20,61 @@ export class ClientsService {
     if (!createClientDto) throw new BadRequestException("Invalid data client");
 
     const clientCreated = this.repository.create(createClientDto);
+    if (!clientCreated) throw new ConflictException("Client not created");
+
     const clientSaved = await this.repository.save(clientCreated);
+    if (!clientSaved) throw new ConflictException("Client not saved");
 
     return clientSaved;
   }
 
   async findAll() {
     const clients = await this.repository.find();
-
     if (!clients) throw new ConflictException("Clients not found");
 
     return clients;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} client`;
+  async findOne(id: string) {
+    if (!id) throw new BadRequestException("Id is required");
+
+    const client = await this.repository.findOneBy({ id });
+    if (!client) throw new ConflictException("Client not found");
+
+    return client;
   }
 
-  update(id: string, updateClientDto: UpdateClientDto) {
-    return `This action updates a #${id} client`;
+  async update(id: string, updateClientDto: UpdateClientDto) {
+    if (!id) throw new BadRequestException("Id is required");
+    if (!updateClientDto)
+      throw new BadRequestException("Invalid data update client");
+
+    const client = await this.repository.findOneBy({ id });
+    if (!client) throw new ConflictException("Client not found");
+
+    const clientUptaded = {
+      ...client,
+      ...updateClientDto,
+    };
+
+    const clientPreload = await this.repository.preload(clientUptaded);
+    if (!clientPreload) throw new ConflictException("Client not preloaded");
+
+    const clientSaved = await this.repository.save(clientPreload);
+    if (!clientSaved) throw new ConflictException("Client not saved");
+
+    return clientSaved;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} client`;
+  async remove(id: string) {
+    if (!id) throw new BadRequestException("Id is required");
+
+    const client = await this.repository.findOneBy({ id });
+    if (!client) throw new ConflictException("Client not found");
+
+    const clientRemoved = await this.repository.delete({ id });
+    if (!clientRemoved) throw new ConflictException("Client not removed");
+
+    return client;
   }
 }
