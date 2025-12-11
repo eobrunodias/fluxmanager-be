@@ -1,26 +1,94 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateOrderItemDto } from "./dto/create-order-item.dto";
 import { UpdateOrderItemDto } from "./dto/update-order-item.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { OrderItem } from "./entities/order-item.entity";
+import { Repository } from "typeorm";
+import { Product } from "../products/entities/product.entity";
+import { Order } from "../orders/entities/order.entity";
 
 @Injectable()
 export class OrderItemsService {
-  create(createOrderItemDto: CreateOrderItemDto) {
-    return "This action adds a new orderItem";
+  constructor(
+    @InjectRepository(OrderItem)
+    private readonly orderItemsRepository: Repository<OrderItem>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+  ) {}
+
+  async create(createOrderItemDto: CreateOrderItemDto) {
+    if (!createOrderItemDto)
+      throw new BadRequestException("Data ordemItem is required");
+
+    const orderItemCreated =
+      this.orderItemsRepository.create(createOrderItemDto);
+    if (!orderItemCreated) throw new ConflictException("OrderItem not created");
+
+    const orderItemSaved =
+      await this.orderItemsRepository.save(orderItemCreated);
+    if (!orderItemSaved) throw new ConflictException("OrderItem not saved");
+
+    return orderItemSaved;
   }
 
-  findAll() {
-    return `This action returns all orderItems`;
+  async findAll() {
+    const orderItems = await this.orderItemsRepository.find();
+    if (!orderItems || orderItems.length === 0)
+      throw new NotFoundException("OrderItems not found");
+
+    return orderItems;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} orderItem`;
+  async findOne(id: string) {
+    if (!id) throw new BadRequestException("Id is required");
+
+    const orderItem = await this.orderItemsRepository.findOneBy({ id });
+    if (!orderItem) throw new NotFoundException("OrderItem not found");
+
+    return orderItem;
   }
 
-  update(id: string, updateOrderItemDto: UpdateOrderItemDto) {
-    return `This action updates a #${id} orderItem`;
+  async update(id: string, updateOrderItemDto: UpdateOrderItemDto) {
+    if (!id) throw new BadRequestException("Id is required");
+    if (!updateOrderItemDto)
+      throw new BadRequestException("Data orderItem is required");
+
+    const orderItem = await this.orderItemsRepository.findOneBy({ id });
+    if (!orderItem) throw new NotFoundException("OrderItem not found");
+
+    const orderItemUpdated = {
+      ...updateOrderItemDto,
+      ...orderItem,
+    };
+
+    const orderItemPreloaded =
+      await this.orderItemsRepository.preload(orderItemUpdated);
+    if (!orderItemPreloaded)
+      throw new ConflictException("orderItem not preloaded");
+
+    const orderItemSaved =
+      await this.orderItemsRepository.preload(orderItemPreloaded);
+    if (!orderItemSaved) throw new ConflictException("orderItem not saved");
+
+    return orderItemSaved;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} orderItem`;
+  async remove(id: string) {
+    if (!id) throw new BadRequestException("Id is required");
+
+    const orderItem = await this.orderItemsRepository.findOneBy({ id });
+    if (!orderItem) throw new NotFoundException("OrderItem not found");
+
+    const orderItemDeleted = await this.orderItemsRepository.delete({ id });
+    if (!orderItemDeleted) throw new ConflictException("OrderItem not deleted");
+
+    return orderItem;
   }
 }

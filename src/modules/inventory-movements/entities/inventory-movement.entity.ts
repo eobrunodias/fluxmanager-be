@@ -29,7 +29,7 @@ export class InventoryMovement {
 
   @ManyToOne(() => Product, (product) => product.inventoryMovements)
   @JoinColumn({ name: "product_id" })
-  productId: string;
+  product: string;
 
   @ManyToOne(() => Order, (order) => order.inventoryMovements)
   @JoinColumn({ name: "order_id" })
