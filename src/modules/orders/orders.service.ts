@@ -80,7 +80,7 @@ export class OrdersService {
     const order = await this.repository.findOneBy({ id });
 
     if (!order) throw new BadRequestException("Order not found");
-    await this.repository.remove(order);
+    await this.repository.delete({ id });
 
     return order;
   }

@@ -72,7 +72,7 @@ export class CategoriesService {
     const category = await this.repository.findOneBy({ id });
     if (!category) throw new BadRequestException("Category not found");
 
-    const categoryRemoved = await this.repository.remove(category);
+    const categoryRemoved = await this.repository.delete({ id });
     if (!categoryRemoved) throw new ConflictException("Category not removed");
 
     return categoryRemoved;

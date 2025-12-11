@@ -78,7 +78,7 @@ export class SettingsService {
     const setting = await this.repository.findOneBy({ id });
 
     if (!setting) throw new BadRequestException("Setting not found");
-    await this.repository.remove(setting);
+    await this.repository.delete({ id });
 
     return setting;
   }
