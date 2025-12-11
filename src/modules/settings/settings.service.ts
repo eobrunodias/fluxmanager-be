@@ -1,10 +1,13 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from "@nestjs/common";
 import { CreateSettingDto } from "./dto/create-setting.dto";
 import { UpdateSettingDto } from "./dto/update-setting.dto";
 import { Setting } from "./entities/setting.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Equal } from "typeorm";
 
 @Injectable()
 export class SettingsService {
@@ -19,7 +22,7 @@ export class SettingsService {
     if (!userId) throw new BadRequestException("User ID is required");
 
     const hasSetting = await this.repository.findOneBy({
-      userId: Equal(userId),
+      user: { id: userId },
     });
 
     if (hasSetting)
@@ -27,7 +30,7 @@ export class SettingsService {
 
     const setting = {
       ...createSettingDto,
-      userId: { id: userId },
+      user: { id: userId },
     };
 
     const settingEntity = this.repository.create(setting);
@@ -43,14 +46,14 @@ export class SettingsService {
   }
 
   async findOne(id: string) {
-    const setting = await this.repository.findOneBy({ id: Equal(id) });
+    const setting = await this.repository.findOneBy({ id });
     if (!setting) throw new BadRequestException("Setting not found");
 
     return setting;
   }
 
   async update(id: string, updateSettingDto: UpdateSettingDto) {
-    const setting = await this.repository.findOneBy({ id: Equal(id) });
+    const setting = await this.repository.findOneBy({ id });
     if (!setting) throw new BadRequestException("Setting not found");
 
     const updatedSetting = {
@@ -58,10 +61,13 @@ export class SettingsService {
       ...updateSettingDto,
     };
 
-    const preloadSetting = await this.repository.preload(updatedSetting);
-    if (!preloadSetting) throw new BadRequestException("Setting not found");
+    const preloadedSetting = await this.repository.preload(updatedSetting);
+    if (!preloadedSetting) throw new ConflictException("Setting not preloaded");
 
-    return this.repository.save(preloadSetting);
+    const savedSetting = await this.repository.save(preloadedSetting);
+    if (!savedSetting) throw new ConflictException("Setting not updated");
+
+    return savedSetting;
   }
 
   async remove(id: string) {
