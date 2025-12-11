@@ -1,15 +1,36 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from "@nestjs/common";
 import { CreateClientDto } from "./dto/create-client.dto";
 import { UpdateClientDto } from "./dto/update-client.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Client } from "./entities/client.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class ClientsService {
-  create(createClientDto: CreateClientDto) {
-    return "This action adds a new client";
+  constructor(
+    @InjectRepository(Client)
+    private readonly repository: Repository<Client>,
+  ) {}
+
+  async create(createClientDto: CreateClientDto) {
+    if (!createClientDto) throw new BadRequestException("Invalid data client");
+
+    const clientCreated = this.repository.create(createClientDto);
+    const clientSaved = await this.repository.save(clientCreated);
+
+    return clientSaved;
   }
 
-  findAll() {
-    return `This action returns all clients`;
+  async findAll() {
+    const clients = await this.repository.find();
+
+    if (!clients) throw new ConflictException("Clients not found");
+
+    return clients;
   }
 
   findOne(id: string) {

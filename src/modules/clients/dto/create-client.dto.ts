@@ -14,7 +14,7 @@ export class CreateClientDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @Length(100)
+  @Length(10, 100)
   email: string;
 
   @IsNotEmpty()
