@@ -21,5 +21,5 @@ export class Invoice {
 
   @OneToOne(() => Order, (order) => order.invoice)
   @JoinColumn({ name: "order_id" })
-  orderId: string;
+  order: Order;
 }
