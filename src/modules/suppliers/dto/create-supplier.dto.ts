@@ -19,7 +19,7 @@ export class CreateSupplierDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @Length(100)
+  @Length(10, 100)
   email: string;
 
   @IsNotEmpty()

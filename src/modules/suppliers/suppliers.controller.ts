@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { SuppliersService } from "./suppliers.service";
 import { CreateSupplierDto } from "./dto/create-supplier.dto";
@@ -15,9 +16,12 @@ import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
-  @Post()
-  create(@Body() createSupplierDto: CreateSupplierDto) {
-    return this.suppliersService.create(createSupplierDto);
+  @Post("products/:productId")
+  create(
+    @Body() createSupplierDto: CreateSupplierDto,
+    @Param("productId", ParseUUIDPipe) productId: string,
+  ) {
+    return this.suppliersService.create(createSupplierDto, productId);
   }
 
   @Get()
