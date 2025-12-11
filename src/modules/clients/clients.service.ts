@@ -19,6 +19,12 @@ export class ClientsService {
   async create(createClientDto: CreateClientDto) {
     if (!createClientDto) throw new BadRequestException("Invalid data client");
 
+    const existingClient = await this.repository.findOneBy({
+      email: createClientDto.email,
+    });
+    if (existingClient)
+      throw new ConflictException("Client with this email already exists");
+
     const clientCreated = this.repository.create(createClientDto);
     if (!clientCreated) throw new ConflictException("Client not created");
 
