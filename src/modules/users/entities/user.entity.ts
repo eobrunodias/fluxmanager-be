@@ -37,9 +37,9 @@ export class User {
   @Column({ default: false, name: "is_active" })
   isActive: boolean;
 
-  @OneToOne(() => Setting, (setting) => setting.userId)
+  @OneToOne(() => Setting, (setting) => setting.user)
   setting: Setting;
 
-  @OneToMany(() => Order, (order) => order.userId)
-  order: Order[];
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }
