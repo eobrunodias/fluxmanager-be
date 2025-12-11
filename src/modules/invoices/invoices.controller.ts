@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { InvoicesService } from "./invoices.service";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
@@ -15,9 +16,12 @@ import { UpdateInvoiceDto } from "./dto/update-invoice.dto";
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
-  @Post()
-  create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return this.invoicesService.create(createInvoiceDto);
+  @Post(":orderId")
+  create(
+    @Param("orderId", ParseUUIDPipe) orderId: string,
+    @Body() createInvoiceDto: CreateInvoiceDto,
+  ) {
+    return this.invoicesService.create(createInvoiceDto, orderId);
   }
 
   @Get()
