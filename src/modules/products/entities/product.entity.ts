@@ -45,17 +45,17 @@ export class Product {
 
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: "category_id" })
-  categoryId: string;
+  category: Category;
 
-  @OneToOne(() => Stock, (stock) => stock.productId)
-  stockId: string;
+  @ManyToMany(() => Supplier, (supplier) => supplier.products)
+  suppliers: Supplier[];
+
+  @OneToOne(() => Stock, (stock) => stock.product)
+  stock: Stock;
 
   @OneToMany(() => OrderItem, (ordemItem) => ordemItem.productId)
   ordemItems: OrderItem[];
 
   @OneToMany(() => InventoryMovement, (im) => im.productId)
   inventoryMovements: InventoryMovement[];
-
-  @ManyToMany(() => Supplier, (supplier) => supplier.products)
-  suppliers: Supplier[];
 }
