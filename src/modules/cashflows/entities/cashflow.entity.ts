@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
@@ -26,7 +27,10 @@ export class Cashflow {
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
+
   @ManyToOne(() => Order, (order) => order.cashflows)
   @JoinColumn({ name: "order_id" })
-  orderId: string;
+  order: Order;
 }

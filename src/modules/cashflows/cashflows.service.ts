@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from "@nestjs/common";
 import { CreateCashflowsDto } from "./dto/create-cashflows.dto";
 import { UpdateCashflowsDto } from "./dto/update-cashflows.dto";
 import { Repository } from "typeorm";
@@ -12,19 +16,31 @@ export class CashflowsService {
     private readonly repository: Repository<Cashflow>,
   ) {}
 
-  async create(createCashflowsDto: CreateCashflowsDto) {
+  async create(createCashflowsDto: CreateCashflowsDto, orderId: string) {
+    console.log("orderId: ", orderId);
     if (!createCashflowsDto)
-      throw new BadRequestException("Cashflow not found");
+      throw new BadRequestException("Invalid data cashflow");
+    if (!orderId) throw new BadRequestException("Order ID is required");
 
-    const newCashflow = this.repository.create(createCashflowsDto);
+    const cashflow = {
+      ...createCashflowsDto,
+      order: { id: orderId },
+    };
 
-    if (!newCashflow) throw new BadRequestException("Cashflow not found");
+    const cashflowCreated = this.repository.create(cashflow);
+    if (!cashflowCreated) throw new ConflictException("Cashflow not created");
 
-    return await this.repository.save(newCashflow);
+    const cashflowSaved = await this.repository.save(cashflowCreated);
+    if (!cashflowSaved) throw new ConflictException("Cashflow not saved");
+
+    return cashflowSaved;
   }
 
-  findAll() {
-    return `This action returns all cashflow`;
+  async findAll() {
+    const cashflows = await this.repository.find();
+    if (!cashflows) throw new ConflictException("Cashflows not found");
+
+    return cashflows;
   }
 
   findOne(id: string) {
