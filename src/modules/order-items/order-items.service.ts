@@ -27,8 +27,21 @@ export class OrderItemsService {
     if (!createOrderItemDto)
       throw new BadRequestException("Data ordemItem is required");
 
-    const orderItemCreated =
-      this.orderItemsRepository.create(createOrderItemDto);
+    const { productId, orderId, ...dto } = createOrderItemDto;
+
+    const product = await this.productRepository.findOneBy({ id: productId });
+    if (!product) throw new NotFoundException("Product not found");
+
+    const order = await this.orderRepository.findOneBy({ id: orderId });
+    if (!order) throw new NotFoundException("Order not found");
+
+    const ordemItem = {
+      ...dto,
+      product,
+      order,
+    };
+
+    const orderItemCreated = this.orderItemsRepository.create(ordemItem);
     if (!orderItemCreated) throw new ConflictException("OrderItem not created");
 
     const orderItemSaved =
