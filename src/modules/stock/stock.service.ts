@@ -68,8 +68,8 @@ export class StockService {
     if (!stock) throw new NotFoundException("Stock not found");
 
     const stockUpdated = {
-      ...updateStockDto,
       ...stock,
+      ...updateStockDto,
     };
 
     const stockPreloaded = await this.stockRepository.preload(stockUpdated);

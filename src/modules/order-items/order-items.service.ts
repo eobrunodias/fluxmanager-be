@@ -77,8 +77,8 @@ export class OrderItemsService {
     if (!orderItem) throw new NotFoundException("OrderItem not found");
 
     const orderItemUpdated = {
-      ...updateOrderItemDto,
       ...orderItem,
+      ...updateOrderItemDto,
     };
 
     const orderItemPreloaded =
