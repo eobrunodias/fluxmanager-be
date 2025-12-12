@@ -6,35 +6,32 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
 } from "@nestjs/common";
 
 import { CashflowsService } from "./cashflows.service";
 import { CreateCashflowsDto } from "./dto/create-cashflows.dto";
 import { UpdateCashflowsDto } from "./dto/update-cashflows.dto";
 
-@Controller()
+@Controller("cashflow")
 export class CashflowsController {
   constructor(private readonly cashflowService: CashflowsService) {}
 
-  @Post("orders/:orderId/cashflow")
-  create(
-    @Param("orderId", ParseUUIDPipe) orderId: string,
-    @Body() createCashflowDto: CreateCashflowsDto,
-  ) {
-    console.log("orderId: ", orderId);
-    return this.cashflowService.create(createCashflowDto, orderId);
+  @Post()
+  create(@Body() createCashflowDto: CreateCashflowsDto) {
+    return this.cashflowService.create(createCashflowDto);
   }
 
-  @Get("cashflows")
-  findAll() {}
+  @Get()
+  findAll() {
+    return this.cashflowService.findAll();
+  }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.cashflowService.findOne(id);
   }
 
-  @Patch("cashflows/:id")
+  @Patch(":id")
   update(
     @Param("id") id: string,
     @Body() updateCashflowDto: UpdateCashflowsDto,
@@ -42,7 +39,7 @@ export class CashflowsController {
     return this.cashflowService.update(id, updateCashflowDto);
   }
 
-  @Delete("cashflows/:id")
+  @Delete(":id")
   remove(@Param("id") id: string) {
     return this.cashflowService.remove(id);
   }

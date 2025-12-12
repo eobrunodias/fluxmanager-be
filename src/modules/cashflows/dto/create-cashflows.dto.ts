@@ -16,7 +16,7 @@ export class CreateCashflowsDto {
   type: CashflowType;
 
   @IsUUID()
-  order: string;
+  orderId: string;
 
   @IsString()
   @IsOptional()
