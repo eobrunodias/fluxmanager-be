@@ -47,7 +47,10 @@ export class Product {
   @JoinColumn({ name: "category_id" })
   category: Category;
 
-  @ManyToMany(() => Supplier, (supplier) => supplier.products)
+  @ManyToMany(() => Supplier, (supplier) => supplier.products, {
+    eager: true,
+    cascade: true,
+  })
   suppliers: Supplier[];
 
   @OneToOne(() => Stock, (stock) => stock.product)

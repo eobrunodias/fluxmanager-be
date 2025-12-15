@@ -1,4 +1,6 @@
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -36,6 +38,8 @@ export class CreateProductDto {
   @IsUUID()
   categoryId: string;
 
-  @IsUUID()
-  supplierId: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID("4", { each: true })
+  supplierIds: string[];
 }
