@@ -1,20 +1,20 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
-import { ValidationPipe } from "@nestjs/common";
+import swaggerConfig from "./configs/swagger.config";
+import globalConfig from "./configs/global";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import envs from "./configs/verify-envs";
+import { Logger } from "@nestjs/common";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const logger = new Logger("BootstrapApplication");
 
-  app.setGlobalPrefix("api/v1");
+  swaggerConfig(app);
+  globalConfig(app);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(envs.PORT, () => {
+    logger.verbose(`Server running http://localhost:${envs.PORT}/api/v1`);
+  });
 }
 void bootstrap();
