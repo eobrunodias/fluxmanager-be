@@ -30,7 +30,8 @@ export class InvoicesService {
 
     const invoice = {
       ...createInvoiceDto,
-      order,
+      orderId: orderId,
+      // order,
     };
 
     const invoiceCreated = this.invoiceRepository.create(invoice);
