@@ -4,30 +4,36 @@ import { Stock } from "../entities/stock.entity";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateStockDto } from "../dto/update-stock.dto";
 import { CreateStockDto } from "../dto/create-stock.dto";
+import { ProductsRepository } from "src/modules/products/repositories/products.repository";
 
 export class StockRepository {
   constructor(
     @InjectRepository(Stock)
     private readonly stockRepository: Repository<Stock>,
+
+    private readonly productRepository: ProductsRepository,
   ) {}
 
-  async createStock(createStockDto: CreateStockDto) {
-    const stock = {
+  async createStock(createStockDto: CreateStockDto, productId: string) {
+    const product = await this.productRepository.findProductById(productId);
+    if (!product) throw new NotFoundException("Product not found");
+
+    const existingStock = await this.stockRepository.findOneBy({
+      product: { id: productId },
+    });
+    if (existingStock)
+      throw new ConflictException("Stock for this product already exists");
+
+    const stock = this.stockRepository.create({
       ...createStockDto,
-    };
+      product: product,
+    });
 
-    const stockCreated = this.stockRepository.create(stock);
-    if (!stockCreated) throw new ConflictException("Stock not created");
-
-    const stockSaved = await this.stockRepository.save(stockCreated);
-    if (!stockSaved) throw new ConflictException("Stock not saved");
-
-    return stockSaved;
+    return await this.stockRepository.save(stock);
   }
 
   async findAllStocks() {
     const stocks = await this.stockRepository.find();
-
     if (!stocks) throw new NotFoundException();
 
     return stocks;
@@ -41,29 +47,21 @@ export class StockRepository {
   }
 
   async updatedStock(id: string, updateStockDto: UpdateStockDto) {
-    const stock = await this.stockRepository.findOneBy({ id });
-    if (!stock) throw new NotFoundException("Stock not found");
-
-    const stockUpdated = {
-      ...stock,
+    const stockPreloaded = await this.stockRepository.preload({
+      id,
       ...updateStockDto,
-    };
+    });
 
-    const stockPreloaded = await this.stockRepository.preload(stockUpdated);
-    if (!stockPreloaded) throw new ConflictException("Stock not preloaded");
+    if (!stockPreloaded) throw new NotFoundException("Stock not found");
 
-    const stockSaved = await this.stockRepository.save(stockPreloaded);
-    if (!stockPreloaded) throw new ConflictException("Stock not saved");
-
-    return stockSaved;
+    return await this.stockRepository.save(stockPreloaded);
   }
 
   async deleteStock(id: string) {
     const stock = await this.stockRepository.findOneBy({ id });
     if (!stock) throw new NotFoundException("Stock not found");
 
-    const stockRemoved = await this.stockRepository.delete({ id });
-    if (!stockRemoved) throw new ConflictException("Stock not removed");
+    await this.stockRepository.delete(id);
 
     return stock;
   }
