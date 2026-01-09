@@ -11,14 +11,17 @@ import { Product } from "./entities/product.entity";
 import { Repository } from "typeorm";
 import { Category } from "../categories/entities/category.entity";
 import { Supplier } from "../suppliers/entities/supplier.entity";
+import { ProductsRepository } from "./repositories/products.repository";
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    private readonly productRepository: ProductsRepository,
+
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
+
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
   ) {}
@@ -40,9 +43,8 @@ export class ProductsService {
     });
     if (!category) throw new NotFoundException("Category not found");
 
-    const supplier = await this.supplierRepository.findOne({
-      where: { id: createProductDto.supplierId },
-    });
+    const supplier = await this.supplierRepository.findOne({});
+
     if (!supplier) throw new NotFoundException("Supplier not found");
 
     const product = {
@@ -70,10 +72,7 @@ export class ProductsService {
   async findOne(id: string) {
     if (!id) throw new BadRequestException("Id is required");
 
-    const product = await this.productRepository.findOneBy({ id });
-    if (!product) throw new ConflictException("Product not found");
-
-    return product;
+    return this.productRepository.findProductById(id);
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
