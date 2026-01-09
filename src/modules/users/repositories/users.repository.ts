@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { User } from "../entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -13,16 +13,26 @@ export class UsersRepository {
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.repository.findOneBy({
+      email: createUserDto.email,
+    });
+    if (existingUser) throw new NotFoundException("Email already exists");
+
     const user = this.repository.create(createUserDto);
-    return this.repository.save(user);
+
+    return await this.repository.save(user);
   }
 
   async findAllUsers() {
-    return this.repository.find();
+    const users = await this.repository.find();
+    if (!users) throw new NotFoundException("Users not found");
+    return users;
   }
 
   async findUserById(id: string) {
-    return this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id });
+    if (!user) throw new NotFoundException("User not found");
+    return user;
   }
 
   async findUserByEmail(email: string) {
@@ -41,6 +51,11 @@ export class UsersRepository {
   }
 
   async deleteUser(id: string) {
-    return await this.repository.delete(id);
+    const user = await this.repository.findOneBy({ id });
+    if (!user) throw new NotFoundException("User not found");
+
+    await this.repository.delete(id);
+
+    return user;
   }
 }

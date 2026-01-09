@@ -1,68 +1,35 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { Repository } from "typeorm";
 import { User } from "./entities/user.entity";
-import { InjectRepository } from "@nestjs/typeorm";
+import { UsersRepository } from "./repositories/users.repository";
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly repository: Repository<User>,
-  ) {}
+  constructor(private readonly repository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
-    const { name, email, password } = createUserDto;
-
-    const existingUser = await this.repository.findOneBy({ email });
-    if (existingUser) throw new BadRequestException("Email already exists");
-
-    const newUser = {
-      name,
-      email,
-      password,
-    };
-
-    return await this.repository.save(newUser);
+    if (!createUserDto)
+      throw new BadRequestException("Request body is required");
+    return await this.repository.createUser(createUserDto);
   }
 
   async findAll(): Promise<User[]> {
-    const users = await this.repository.find();
-
-    if (!users) throw new BadRequestException("Users not found");
-
-    return users;
+    return await this.repository.findAllUsers();
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.repository.findOneBy({ id });
-
-    if (!user) throw new BadRequestException("User not found");
-
-    return user;
+    if (!id) throw new BadRequestException("Id is required");
+    return this.repository.findUserById(id);
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UpdateUserDto> {
-    const user = await this.repository.preload({
-      id,
-      ...updateUserDto,
-    });
-
-    if (!user) throw new BadRequestException("User not found");
-
-    return this.repository.save(user);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    if (!id) throw new BadRequestException("Id is required");
+    return await this.repository.updateUser(id, updateUserDto);
   }
 
   async remove(id: string): Promise<User> {
-    const user = await this.repository.findOneBy({ id });
-
-    if (!user) throw new BadRequestException("User not found");
-
-    await this.repository.delete({ id });
-    return user;
+    if (!id) throw new BadRequestException("Id is required");
+    return await this.repository.deleteUser(id);
   }
 }
