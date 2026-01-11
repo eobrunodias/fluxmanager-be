@@ -1,87 +1,34 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { Repository } from "typeorm";
-import { Order } from "./entities/order.entity";
-import { InjectRepository } from "@nestjs/typeorm";
+import { OrdersRepository } from "./repositories/orders.repository";
 
 @Injectable()
 export class OrdersService {
-  constructor(
-    @InjectRepository(Order)
-    private readonly repository: Repository<Order>,
-  ) {}
+  constructor(private readonly repository: OrdersRepository) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    if (!createOrderDto) throw new BadRequestException("Invalid data order");
-
-    const order = {
-      ...createOrderDto,
-      client: {
-        id: createOrderDto.client,
-      },
-      user: {
-        id: createOrderDto.user,
-      },
-    };
-
-    const orderCreated = this.repository.create(order);
-    const orderSaved = await this.repository.save(orderCreated);
-
-    if (!orderSaved) throw new ConflictException("Order not created");
-
-    return orderSaved;
+    if (!createOrderDto)
+      throw new BadRequestException("Request body is required");
+    return this.repository.createOrder(createOrderDto);
   }
 
   async findAll() {
-    const orders = await this.repository.find();
-
-    if (!orders) throw new BadRequestException("Orders not found");
-
-    return orders;
+    return this.repository.findAllOrders();
   }
 
   async findOne(id: string) {
-    const order = await this.repository.findOneBy({ id });
-    if (!order) throw new BadRequestException("Order not found");
-
-    return order;
+    if (!id) throw new BadRequestException("Order not found");
+    return await this.repository.findOrderById(id);
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.repository.findOneBy({ id });
-    if (!order) throw new BadRequestException("Order not found");
-
-    const updatedOrder = {
-      ...order,
-      ...updateOrderDto,
-      client: {
-        id: updateOrderDto.client,
-      },
-      user: {
-        id: updateOrderDto.user,
-      },
-    };
-
-    const preloadedOrder = await this.repository.preload(updatedOrder);
-    if (!preloadedOrder) throw new ConflictException("Order not preloaded");
-
-    const savedOrder = await this.repository.save(preloadedOrder);
-    if (!savedOrder) throw new ConflictException("Order not updated");
-
-    return savedOrder;
+    if (!id) throw new BadRequestException("Order not found");
+    return await this.repository.updatedOrder(id, updateOrderDto);
   }
 
   async remove(id: string) {
-    const order = await this.repository.findOneBy({ id });
-
-    if (!order) throw new BadRequestException("Order not found");
-    await this.repository.delete({ id });
-
-    return order;
+    if (!id) throw new BadRequestException("Order not found");
+    return await this.repository.deleteOrder(id);
   }
 }
