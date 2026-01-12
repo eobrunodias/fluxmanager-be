@@ -1,4 +1,5 @@
 import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { TypeOrmExceptionFilter } from "src/common/filters/typeorm-exception.filter";
 
 export default (app: INestApplication) => {
   app.useGlobalPipes(
@@ -10,5 +11,5 @@ export default (app: INestApplication) => {
   );
 
   app.setGlobalPrefix("api/v1");
-  // app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalFilters(new TypeOrmExceptionFilter());
 };
