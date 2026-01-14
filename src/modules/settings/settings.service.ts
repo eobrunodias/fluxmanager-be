@@ -1,55 +1,27 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateSettingDto } from "./dto/create-setting.dto";
 import { UpdateSettingDto } from "./dto/update-setting.dto";
-import { Setting } from "./entities/setting.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
+import { SettingsRepository } from "./repositories/settings.repository";
 
 @Injectable()
 export class SettingsService {
-  constructor(
-    @InjectRepository(Setting)
-    private readonly repository: Repository<Setting>,
-  ) {}
+  constructor(private readonly repository: SettingsRepository) {}
 
   async create(createSettingDto: CreateSettingDto, userId: string) {
     if (!createSettingDto)
       throw new BadRequestException("Invalid setting data");
     if (!userId) throw new BadRequestException("User ID is required");
 
-    const hasSetting = await this.repository.findOneBy({
-      user: { id: userId },
-    });
-
-    if (hasSetting)
-      throw new BadRequestException("User already has a setting configured");
-
-    const setting = {
-      ...createSettingDto,
-      user: { id: userId },
-    };
-
-    const settingEntity = this.repository.create(setting);
-    return await this.repository.save(settingEntity);
+    return await this.repository.createSetting(createSettingDto, userId);
   }
 
   async findAll() {
-    const settings = await this.repository.find();
-    if (!settings || settings.length === 0)
-      throw new BadRequestException("No settings found");
-
-    return settings;
+    return this.repository.findAllSettings();
   }
 
   async findOne(id: string) {
-    const setting = await this.repository.findOneBy({ id });
-    if (!setting) throw new BadRequestException("Setting not found");
-
-    return setting;
+    if (!id) throw new BadRequestException("Setting not found");
+    return this.repository.findSettingById(id);
   }
 
   async update(id: string, updateSettingDto: UpdateSettingDto) {
@@ -57,29 +29,11 @@ export class SettingsService {
     if (!updateSettingDto)
       throw new BadRequestException("Setting data update invalid");
 
-    const setting = await this.repository.findOneBy({ id });
-    if (!setting) throw new BadRequestException("Setting not found");
-
-    const updatedSetting = {
-      ...setting,
-      ...updateSettingDto,
-    };
-
-    const preloadedSetting = await this.repository.preload(updatedSetting);
-    if (!preloadedSetting) throw new ConflictException("Setting not preloaded");
-
-    const savedSetting = await this.repository.save(preloadedSetting);
-    if (!savedSetting) throw new ConflictException("Setting not updated");
-
-    return savedSetting;
+    return this.repository.findSettingById(id);
   }
 
   async remove(id: string) {
-    const setting = await this.repository.findOneBy({ id });
-
-    if (!setting) throw new BadRequestException("Setting not found");
-    await this.repository.delete({ id });
-
-    return setting;
+    if (!id) throw new BadRequestException("Setting not found");
+    return this.repository.deleteSetting(id);
   }
 }
