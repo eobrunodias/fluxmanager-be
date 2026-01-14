@@ -1,56 +1,27 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreatePaymentDto } from "./dto/create-payment.dto";
 import { UpdatePaymentDto } from "./dto/update-payment.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Payment } from "./entities/payment.entity";
-import { Repository } from "typeorm";
+import { PaymentsRepository } from "./repositories/payments.repository";
 
 @Injectable()
 export class PaymentsService {
-  constructor(
-    @InjectRepository(Payment)
-    private readonly repository: Repository<Payment>,
-  ) {}
+  constructor(private readonly repository: PaymentsRepository) {}
 
   async create(createPaymentDto: CreatePaymentDto, orderId: string) {
     if (!orderId) throw new BadRequestException("orderId is required");
     if (!createPaymentDto)
       throw new BadRequestException("Data payment is required");
 
-    const payment = {
-      order: {
-        id: orderId,
-      },
-      ...createPaymentDto,
-    };
-
-    const paymentCreated = this.repository.create(payment);
-    if (!paymentCreated) throw new NotFoundException("Payment not created");
-
-    const paymentSaved = await this.repository.save(paymentCreated);
-    if (!paymentSaved) throw new NotFoundException("Payment not saved");
-
-    return paymentSaved;
+    return this.repository.createPayment(createPaymentDto, orderId);
   }
 
   async findAll() {
-    const payments = await this.repository.find();
-    if (!payments) throw new NotFoundException("Payments not found");
-
-    return payments;
+    return this.repository.findAllPayments();
   }
 
   async findOne(id: string) {
     if (!id) throw new BadRequestException("Id is required");
-
-    const payment = await this.repository.findOneBy({ id });
-    if (!payment) throw new NotFoundException("Payment not found");
-
-    return payment;
+    return this.repository.findPaymentById(id);
   }
 
   async update(id: string, updatePaymentDto: UpdatePaymentDto) {
@@ -58,23 +29,11 @@ export class PaymentsService {
     if (!updatePaymentDto)
       throw new BadRequestException("Data payment is required");
 
-    const payment = await this.repository.findOneBy({ id });
-    if (!payment) throw new NotFoundException("Payment not found");
-
-    const paymentUpdated = {
-      ...payment,
-      ...updatePaymentDto,
-    };
-
-    return paymentUpdated;
+    return this.repository.updatedPayment(id, updatePaymentDto);
   }
 
   async remove(id: string) {
     if (!id) throw new BadRequestException("Id is required");
-
-    const payment = await this.repository.findOneBy({ id });
-    if (!payment) throw new NotFoundException("Payment not found");
-
-    return payment;
+    return this.repository.deletePayment(id);
   }
 }
