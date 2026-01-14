@@ -10,13 +10,11 @@ export class StockRepository {
   constructor(
     @InjectRepository(Stock)
     private readonly stockRepository: Repository<Stock>,
-
     private readonly productRepository: ProductsRepository,
   ) {}
 
   async createStock(createStockDto: CreateStockDto, productId: string) {
     const product = await this.productRepository.findProductById(productId);
-    if (!product) throw new NotFoundException("Product not found");
 
     const existingStock = await this.stockRepository.findOneBy({
       product: { id: productId },
@@ -34,7 +32,7 @@ export class StockRepository {
 
   async findAllStocks() {
     const stocks = await this.stockRepository.find();
-    if (!stocks) throw new NotFoundException();
+    if (!stocks || stocks.length === 0) throw new NotFoundException();
 
     return stocks;
   }
