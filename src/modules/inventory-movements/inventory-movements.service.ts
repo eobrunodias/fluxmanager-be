@@ -7,15 +7,11 @@ import { InventoryMovementsRepository } from "./repositories/inventory-movements
 export class InventoryMovementsService {
   constructor(private readonly repository: InventoryMovementsRepository) {}
 
-  async create(
-    createInventoryMovementDto: CreateInventoryMovementDto,
-    orderId: string,
-    productId: string,
-  ) {
+  async create(createInventoryMovementDto: CreateInventoryMovementDto) {
     if (!createInventoryMovementDto)
       throw new BadRequestException("Data inventoryMovement is required");
-    if (!orderId) throw new BadRequestException("orderId is required");
-    if (!productId) throw new BadRequestException("productId is required");
+
+    const { orderId, productId } = createInventoryMovementDto;
 
     return this.repository.createInventoryMovement(
       createInventoryMovementDto,
