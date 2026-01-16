@@ -17,11 +17,12 @@ export class ProductsRepository {
 
   async createProduct(
     createProductDto: CreateProductDto,
-    supplierId: string,
+    supplierIds: string[],
     categoryId: string,
   ) {
     const category = await this.categoryRepository.findCategoryById(categoryId);
-    const supplier = await this.supplierRepository.findSupplierById(supplierId);
+    const suppliers =
+      await this.supplierRepository.findSuppliersByIds(supplierIds);
 
     const productExists = await this.productRepository.findOneBy({
       sku: createProductDto.sku,
@@ -33,7 +34,7 @@ export class ProductsRepository {
     const productCreated = this.productRepository.create({
       ...createProductDto,
       category: category,
-      suppliers: [supplier],
+      suppliers: suppliers,
     });
 
     return await this.productRepository.save(productCreated);

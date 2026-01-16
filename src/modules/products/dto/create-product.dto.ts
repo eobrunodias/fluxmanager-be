@@ -26,6 +26,7 @@ export class CreateProductDto {
   @IsString()
   barcode: string;
 
+  @IsNotEmpty()
   @Min(0.01)
   @IsNumber({ maxDecimalPlaces: 2 })
   price: number;

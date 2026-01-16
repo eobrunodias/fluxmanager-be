@@ -7,14 +7,12 @@ import { ProductsRepository } from "./repositories/products.repository";
 export class ProductsService {
   constructor(private readonly repository: ProductsRepository) {}
 
-  async create(
-    createProductDto: CreateProductDto,
-    supplierId: string,
-    categoryId: string,
-  ) {
+  async create(createProductDto: CreateProductDto) {
+    const { supplierIds, categoryId } = createProductDto;
+
     return this.repository.createProduct(
       createProductDto,
-      supplierId,
+      supplierIds,
       categoryId,
     );
   }

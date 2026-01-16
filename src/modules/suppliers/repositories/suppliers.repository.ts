@@ -50,6 +50,14 @@ export class SuppliersRepository {
     return supplier;
   }
 
+  async findSuppliersByIds(ids: string[]) {
+    const suppliers = await this.supplierRepository.findByIds(ids);
+    if (!suppliers || suppliers.length === 0)
+      throw new NotFoundException("Suppliers not founds");
+
+    return suppliers;
+  }
+
   async updatedSupplier(id: string, updateSupplierDto: UpdateSupplierDto) {
     const supplierPreloaded = await this.supplierRepository.preload({
       id,
