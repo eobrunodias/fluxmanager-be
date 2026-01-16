@@ -17,8 +17,11 @@ export class CashflowsController {
   constructor(private readonly cashflowService: CashflowsService) {}
 
   @Post()
-  create(@Body() createCashflowDto: CreateCashflowsDto) {
-    return this.cashflowService.create(createCashflowDto);
+  create(
+    @Body() createCashflowDto: CreateCashflowsDto,
+    @Body("orderId") orderId: string,
+  ) {
+    return this.cashflowService.create(createCashflowDto, orderId);
   }
 
   @Get()

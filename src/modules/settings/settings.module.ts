@@ -3,10 +3,11 @@ import { SettingsService } from "./settings.service";
 import { SettingsController } from "./settings.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Setting } from "./entities/setting.entity";
+import { SettingsRepository } from "./repositories/settings.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Setting])],
   controllers: [SettingsController],
-  providers: [SettingsService],
+  providers: [SettingsService, SettingsRepository],
 })
 export class SettingsModule {}

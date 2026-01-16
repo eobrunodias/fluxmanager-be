@@ -10,6 +10,7 @@ export class SuppliersRepository {
   constructor(
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
+
     private readonly productRepository: ProductsRepository,
   ) {}
 
@@ -17,8 +18,6 @@ export class SuppliersRepository {
     createSupplierDto: CreateSupplierDto,
     productId: string,
   ) {
-    const produto = await this.productRepository.findProductById(productId);
-
     const supplierExists = await this.supplierRepository.findOneBy({
       products: {
         id: productId,

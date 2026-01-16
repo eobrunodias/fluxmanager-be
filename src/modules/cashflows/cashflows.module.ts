@@ -3,11 +3,11 @@ import { CashflowsService } from "./cashflows.service";
 import { CashflowsController } from "./cashflows.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Cashflow } from "./entities/cashflow.entity";
-import { Order } from "../orders/entities/order.entity";
+import { CashflowsRepository } from "./repositories/cashflows.repository";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cashflow, Order])],
+  imports: [TypeOrmModule.forFeature([Cashflow])],
   controllers: [CashflowsController],
-  providers: [CashflowsService],
+  providers: [CashflowsService, CashflowsRepository],
 })
 export class CashflowsModule {}

@@ -3,10 +3,11 @@ import { SuppliersService } from "./suppliers.service";
 import { SuppliersController } from "./suppliers.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Supplier } from "./entities/supplier.entity";
+import { SuppliersRepository } from "./repositories/suppliers.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Supplier])],
   controllers: [SuppliersController],
-  providers: [SuppliersService],
+  providers: [SuppliersService, SuppliersRepository],
 })
 export class SuppliersModule {}
