@@ -7,13 +7,11 @@ import { OrderItemsRepository } from "./repositories/order-items.repository";
 export class OrderItemsService {
   constructor(private readonly repository: OrderItemsRepository) {}
 
-  async create(
-    createOrderItemDto: CreateOrderItemDto,
-    productId: string,
-    orderId: string,
-  ) {
+  async create(createOrderItemDto: CreateOrderItemDto) {
     if (!createOrderItemDto)
       throw new BadRequestException("Data ordemItem is required");
+
+    const { productId, orderId } = createOrderItemDto;
 
     return this.repository.createOrderItem(
       createOrderItemDto,
