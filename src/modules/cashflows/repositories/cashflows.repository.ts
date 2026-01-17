@@ -1,26 +1,20 @@
-import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
 import { Repository } from "typeorm";
 import { Cashflow } from "../entities/cashflow.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateCashflowsDto } from "../dto/update-cashflows.dto";
 import { CreateCashflowsDto } from "../dto/create-cashflows.dto";
+import { Order } from "src/modules/orders/entities/order.entity";
 
 export class CashflowsRepository {
   constructor(
     @InjectRepository(Cashflow)
     private readonly cashflowRepository: Repository<Cashflow>,
-    private readonly orderRepository: OrdersRepository,
   ) {}
 
-  async createCashflow(
-    createCashflowsDto: CreateCashflowsDto,
-    orderId: string,
-  ) {
-    const order = await this.orderRepository.findOrderById(orderId);
-
+  async createCashflow(createCashflowsDto: CreateCashflowsDto, order: Order) {
     const cashflowExists = await this.cashflowRepository.findOne({
-      where: { order: { id: orderId } },
+      where: { order: { id: order.id } },
     });
 
     if (cashflowExists) {

@@ -2,17 +2,23 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateCashflowsDto } from "./dto/create-cashflows.dto";
 import { UpdateCashflowsDto } from "./dto/update-cashflows.dto";
 import { CashflowsRepository } from "./repositories/cashflows.repository";
+import { OrdersRepository } from "../orders/repositories/orders.repository";
 
 @Injectable()
 export class CashflowsService {
-  constructor(private readonly cashflowRepository: CashflowsRepository) {}
+  constructor(
+    private readonly cashflowRepository: CashflowsRepository,
+    private readonly orderRepository: OrdersRepository,
+  ) {}
 
   async create(createCashflowsDto: CreateCashflowsDto, orderId: string) {
     if (!createCashflowsDto)
       throw new BadRequestException("Data cashflow is required");
     if (!orderId) throw new BadRequestException("orderId is required");
 
-    return this.cashflowRepository.createCashflow(createCashflowsDto, orderId);
+    const order = await this.orderRepository.findOrderById(orderId);
+
+    return this.cashflowRepository.createCashflow(createCashflowsDto, order);
   }
 
   async findAll() {
