@@ -4,6 +4,8 @@ import { Order } from "../entities/order.entity";
 import { NotFoundException } from "@nestjs/common";
 import { UpdateOrderDto } from "../dto/update-order.dto";
 import { CreateOrderDto } from "../dto/create-order.dto";
+import { User } from "src/modules/users/entities/user.entity";
+import { Client } from "src/modules/clients/entities/client.entity";
 
 export class OrdersRepository {
   constructor(
@@ -11,39 +13,43 @@ export class OrdersRepository {
     private readonly repository: Repository<Order>,
   ) {}
 
-  async createOrder(createOrderDto: CreateOrderDto) {
+  async createOrder(
+    createOrderDto: CreateOrderDto,
+    user: User,
+    client: Client,
+  ): Promise<Order> {
     const order = {
       ...createOrderDto,
-      client: {
-        id: createOrderDto.client,
-      },
-      user: {
-        id: createOrderDto.user,
-      },
+      client,
+      user,
     };
 
-    const createdOrder = this.repository.create(order);
+    const createdOrder: Order = this.repository.create(order);
     await this.repository.save(createdOrder);
 
     return createdOrder;
   }
 
-  async findAllOrders() {
-    const orders = await this.repository.find();
-    if (!orders) throw new NotFoundException("Orders not found");
+  async findAllOrders(): Promise<Order[]> {
+    const orders: Order[] = await this.repository.find();
+    if (!orders || orders.length === 0)
+      throw new NotFoundException("Orders not found");
 
     return orders;
   }
 
-  async findOrderById(id: string) {
-    const order = await this.repository.findOneBy({ id });
+  async findOrderById(id: string): Promise<Order> {
+    const order: Order | null = await this.repository.findOneBy({ id });
     if (!order) throw new NotFoundException("Order not found");
 
     return order;
   }
 
-  async updatedOrder(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.repository.preload({
+  async updatedOrder(
+    id: string,
+    updateOrderDto: UpdateOrderDto,
+  ): Promise<Order> {
+    const order: Order | undefined = await this.repository.preload({
       id,
       ...updateOrderDto,
       client: {
@@ -59,8 +65,8 @@ export class OrdersRepository {
     return await this.repository.save(order);
   }
 
-  async deleteOrder(id: string) {
-    const order = await this.repository.findOneBy({ id });
+  async deleteOrder(id: string): Promise<Order> {
+    const order: Order | null = await this.repository.findOneBy({ id });
     if (!order) throw new NotFoundException("Order not found");
 
     await this.repository.remove(order);
