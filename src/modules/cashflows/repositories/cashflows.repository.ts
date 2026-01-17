@@ -34,7 +34,7 @@ export class CashflowsRepository {
   }
 
   async findAllCashflows(): Promise<Cashflow[]> {
-    const cashflows: Cashflow[] | null = await this.cashflowRepository.find();
+    const cashflows: Cashflow[] = await this.cashflowRepository.find();
     if (!cashflows || cashflows.length === 0)
       throw new NotFoundException("Cashflows not found");
     return cashflows;
