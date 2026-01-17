@@ -4,6 +4,9 @@ import { UpdateInventoryMovementDto } from "./dto/update-inventory-movement.dto"
 import { InventoryMovementsRepository } from "./repositories/inventory-movements.repository";
 import { ProductsRepository } from "../products/repositories/products.repository";
 import { OrdersRepository } from "../orders/repositories/orders.repository";
+import { Order } from "../orders/entities/order.entity";
+import { Product } from "../products/entities/product.entity";
+import { InventoryMovement } from "./entities/inventory-movement.entity";
 
 @Injectable()
 export class InventoryMovementsService {
@@ -13,14 +16,17 @@ export class InventoryMovementsService {
     private readonly productRepository: ProductsRepository,
   ) {}
 
-  async create(createInventoryMovementDto: CreateInventoryMovementDto) {
+  async create(
+    createInventoryMovementDto: CreateInventoryMovementDto,
+  ): Promise<InventoryMovement> {
     if (!createInventoryMovementDto)
       throw new BadRequestException("Data inventoryMovement is required");
 
     const { orderId, productId } = createInventoryMovementDto;
 
-    const order = await this.orderRepository.findOrderById(orderId);
-    const product = await this.productRepository.findProductById(productId);
+    const order: Order = await this.orderRepository.findOrderById(orderId);
+    const product: Product =
+      await this.productRepository.findProductById(productId);
 
     return this.repository.createInventoryMovement(
       createInventoryMovementDto,
@@ -29,11 +35,11 @@ export class InventoryMovementsService {
     );
   }
 
-  async findAll() {
+  async findAll(): Promise<InventoryMovement[]> {
     return this.repository.findAllInventoryMovements();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<InventoryMovement> {
     if (!id) throw new BadRequestException("Id is required");
     return this.repository.findInventoryMovementById(id);
   }
@@ -41,7 +47,7 @@ export class InventoryMovementsService {
   async update(
     id: string,
     updateInventoryMovementDto: UpdateInventoryMovementDto,
-  ) {
+  ): Promise<InventoryMovement> {
     if (!id) throw new BadRequestException("Id is required");
     if (!updateInventoryMovementDto)
       throw new BadRequestException("Data inventoryMovement is required");
@@ -52,7 +58,7 @@ export class InventoryMovementsService {
     );
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<InventoryMovement> {
     if (!id) throw new BadRequestException("Id is required");
     return this.repository.deleteInventoryMovement(id);
   }

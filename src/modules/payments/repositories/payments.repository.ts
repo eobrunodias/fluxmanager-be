@@ -12,8 +12,11 @@ export class PaymentsRepository {
     private readonly paymentRepository: Repository<Payment>,
   ) {}
 
-  async createPayment(createPaymentDto: CreatePaymentDto, order: Order) {
-    const paymentExists = await this.paymentRepository.findOne({
+  async createPayment(
+    createPaymentDto: CreatePaymentDto,
+    order: Order,
+  ): Promise<Payment> {
+    const paymentExists: Payment | null = await this.paymentRepository.findOne({
       where: { order: { id: order.id } },
     });
 
@@ -21,7 +24,7 @@ export class PaymentsRepository {
       throw new ConflictException("Payment already exists for this order");
     }
 
-    const paymentCreated = this.paymentRepository.create({
+    const paymentCreated: Payment = this.paymentRepository.create({
       ...createPaymentDto,
       order: order,
     });
@@ -29,34 +32,42 @@ export class PaymentsRepository {
     return await this.paymentRepository.save(paymentCreated);
   }
 
-  async findAllPayments() {
-    const payments = await this.paymentRepository.find();
+  async findAllPayments(): Promise<Payment[]> {
+    const payments: Payment[] = await this.paymentRepository.find();
     if (!payments || payments.length === 0)
       throw new NotFoundException("Payments not found");
 
     return payments;
   }
 
-  async findPaymentById(id: string) {
-    const payment = await this.paymentRepository.findOneBy({ id });
+  async findPaymentById(id: string): Promise<Payment> {
+    const payment: Payment | null = await this.paymentRepository.findOneBy({
+      id,
+    });
     if (!payment) throw new NotFoundException("Payment not found");
 
     return payment;
   }
 
-  async updatedPayment(id: string, updatePaymentDto: UpdatePaymentDto) {
-    const paymentUpdated = await this.paymentRepository.preload({
-      id,
-      ...updatePaymentDto,
-    });
+  async updatedPayment(
+    id: string,
+    updatePaymentDto: UpdatePaymentDto,
+  ): Promise<Payment> {
+    const paymentUpdated: Payment | undefined =
+      await this.paymentRepository.preload({
+        id,
+        ...updatePaymentDto,
+      });
 
     if (!paymentUpdated) throw new NotFoundException("Payment not found");
 
     return paymentUpdated;
   }
 
-  async deletePayment(id: string) {
-    const payment = await this.paymentRepository.findOneBy({ id });
+  async deletePayment(id: string): Promise<Payment> {
+    const payment: Payment | null = await this.paymentRepository.findOneBy({
+      id,
+    });
     if (!payment) throw new NotFoundException("Payment not found");
 
     await this.paymentRepository.delete(id);

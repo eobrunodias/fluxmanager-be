@@ -12,10 +12,14 @@ export class InvoicesRepository {
     private readonly invoiceRepository: Repository<Invoice>,
   ) {}
 
-  async createInvoice(createInvoiceDto: CreateInvoiceDto, order: Order) {
-    const invoiceExists = await this.invoiceRepository.findOneBy({
-      order: { id: order.id },
-    });
+  async createInvoice(
+    createInvoiceDto: CreateInvoiceDto,
+    order: Order,
+  ): Promise<Invoice> {
+    const invoiceExists: Invoice | null =
+      await this.invoiceRepository.findOneBy({
+        order: { id: order.id },
+      });
     if (invoiceExists) throw new ConflictException("Invoice already exists");
 
     const invoice = this.invoiceRepository.create({
@@ -26,34 +30,42 @@ export class InvoicesRepository {
     return await this.invoiceRepository.save(invoice);
   }
 
-  async findAllInvoices() {
-    const invoices = await this.invoiceRepository.find();
+  async findAllInvoices(): Promise<Invoice[]> {
+    const invoices: Invoice[] = await this.invoiceRepository.find();
     if (!invoices || invoices.length === 0)
       throw new NotFoundException("Invoices not found");
 
     return invoices;
   }
 
-  async findInvoiceById(id: string) {
-    const invoice = await this.invoiceRepository.findOneBy({ id });
+  async findInvoiceById(id: string): Promise<Invoice> {
+    const invoice: Invoice | null = await this.invoiceRepository.findOneBy({
+      id,
+    });
     if (!invoice) throw new NotFoundException("Invoice not found");
 
     return invoice;
   }
 
-  async updatedInvoice(id: string, updateInvoiceDto: UpdateInvoiceDto) {
-    const invoicePreloaded = await this.invoiceRepository.preload({
-      id,
-      ...updateInvoiceDto,
-    });
+  async updatedInvoice(
+    id: string,
+    updateInvoiceDto: UpdateInvoiceDto,
+  ): Promise<Invoice> {
+    const invoicePreloaded: Invoice | undefined =
+      await this.invoiceRepository.preload({
+        id,
+        ...updateInvoiceDto,
+      });
 
     if (!invoicePreloaded) throw new NotFoundException("Invoice not found");
 
     return await this.invoiceRepository.save(invoicePreloaded);
   }
 
-  async deleteInvoice(id: string) {
-    const invoice = await this.invoiceRepository.findOneBy({ id });
+  async deleteInvoice(id: string): Promise<Invoice> {
+    const invoice: Invoice | null = await this.invoiceRepository.findOneBy({
+      id,
+    });
     if (!invoice) throw new NotFoundException("Invoice not found");
 
     await this.invoiceRepository.delete({ id });

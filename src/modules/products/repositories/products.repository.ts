@@ -18,15 +18,16 @@ export class ProductsRepository {
     createProductDto: CreateProductDto,
     suppliers: Supplier[],
     category: Category,
-  ) {
-    const productExists = await this.productRepository.findOneBy({
-      sku: createProductDto.sku,
-    });
+  ): Promise<Product> {
+    const productExists: Product | null =
+      await this.productRepository.findOneBy({
+        sku: createProductDto.sku,
+      });
 
     if (productExists)
       throw new NotFoundException("Product with this SKU already exists");
 
-    const productCreated = this.productRepository.create({
+    const productCreated: Product = this.productRepository.create({
       ...createProductDto,
       category: category,
       suppliers: suppliers,
@@ -35,33 +36,43 @@ export class ProductsRepository {
     return await this.productRepository.save(productCreated);
   }
 
-  async findAllProducts() {
-    const products = await this.productRepository.find();
+  async findAllProducts(): Promise<Product[]> {
+    const products: Product[] = await this.productRepository.find();
     if (!products) throw new NotFoundException("Products not found");
     return products;
   }
 
-  async findProductById(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
+  async findProductById(id: string): Promise<Product> {
+    const product: Product | null = await this.productRepository.findOneBy({
+      id,
+    });
     if (!product) throw new NotFoundException("Product not found");
 
     return product;
   }
 
-  async updatedProduct(id: string, updateProductDto: UpdateProductDto) {
-    const productPrealoaded = await this.productRepository.preload({
-      id,
-      ...updateProductDto,
-    });
+  async updatedProduct(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    const productPrealoaded: Product | undefined =
+      await this.productRepository.preload({
+        id,
+        ...updateProductDto,
+      });
 
     if (!productPrealoaded) throw new NotFoundException("Product not found");
 
     return await this.productRepository.save(productPrealoaded);
   }
 
-  async deleteProduct(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
+  async deleteProduct(id: string): Promise<Product> {
+    const product: Product | null = await this.productRepository.findOneBy({
+      id,
+    });
     if (!product) throw new NotFoundException("Product not found");
+
+    await this.productRepository.remove(product);
     return product;
   }
 }

@@ -12,14 +12,17 @@ export class StockRepository {
     private readonly stockRepository: Repository<Stock>,
   ) {}
 
-  async createStock(createStockDto: CreateStockDto, product: Product) {
-    const existingStock = await this.stockRepository.findOneBy({
+  async createStock(
+    createStockDto: CreateStockDto,
+    product: Product,
+  ): Promise<Stock> {
+    const existingStock: Stock | null = await this.stockRepository.findOneBy({
       product: { id: product.id },
     });
     if (existingStock)
       throw new ConflictException("Stock for this product already exists");
 
-    const stock = this.stockRepository.create({
+    const stock: Stock = this.stockRepository.create({
       ...createStockDto,
       product: product,
     });
@@ -27,33 +30,36 @@ export class StockRepository {
     return await this.stockRepository.save(stock);
   }
 
-  async findAllStocks() {
-    const stocks = await this.stockRepository.find();
+  async findAllStocks(): Promise<Stock[]> {
+    const stocks: Stock[] = await this.stockRepository.find();
     if (!stocks || stocks.length === 0) throw new NotFoundException();
-
     return stocks;
   }
 
-  async findStockById(id: string) {
-    const stock = await this.stockRepository.findOneBy({ id });
+  async findStockById(id: string): Promise<Stock> {
+    const stock: Stock | null = await this.stockRepository.findOneBy({ id });
     if (!stock) throw new ConflictException("Stock not found");
 
     return stock;
   }
 
-  async updatedStock(id: string, updateStockDto: UpdateStockDto) {
-    const stockPreloaded = await this.stockRepository.preload({
-      id,
-      ...updateStockDto,
-    });
+  async updatedStock(
+    id: string,
+    updateStockDto: UpdateStockDto,
+  ): Promise<Stock> {
+    const stockPreloaded: Stock | undefined =
+      await this.stockRepository.preload({
+        id,
+        ...updateStockDto,
+      });
 
     if (!stockPreloaded) throw new NotFoundException("Stock not found");
 
     return await this.stockRepository.save(stockPreloaded);
   }
 
-  async deleteStock(id: string) {
-    const stock = await this.stockRepository.findOneBy({ id });
+  async deleteStock(id: string): Promise<Stock> {
+    const stock: Stock | null = await this.stockRepository.findOneBy({ id });
     if (!stock) throw new NotFoundException("Stock not found");
 
     await this.stockRepository.delete(id);

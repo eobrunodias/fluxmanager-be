@@ -17,14 +17,15 @@ export class OrderItemsRepository {
     createOrderItemDto: CreateOrderItemDto,
     product: Product,
     order: Order,
-  ) {
-    const orderItemExists = await this.orderItemsRepository.findOne({
-      where: {
-        product: { id: product.id },
-        order: { id: order.id },
-      },
-      relations: ["product", "order"],
-    });
+  ): Promise<OrderItem> {
+    const orderItemExists: OrderItem | null =
+      await this.orderItemsRepository.findOne({
+        where: {
+          product: { id: product.id },
+          order: { id: order.id },
+        },
+        relations: ["product", "order"],
+      });
 
     if (orderItemExists)
       throw new NotFoundException("OrderItem already exists for this order");
@@ -38,31 +39,36 @@ export class OrderItemsRepository {
     return await this.orderItemsRepository.save(orderItemsCreated);
   }
 
-  async findAllOrderItems() {
-    const orderItems = await this.orderItemsRepository.find();
+  async findAllOrderItems(): Promise<OrderItem[]> {
+    const orderItems: OrderItem[] = await this.orderItemsRepository.find();
     if (!orderItems || orderItems.length === 0)
       throw new NotFoundException("OrderItems not found");
     return orderItems;
   }
 
-  async findOrderItemById(id: string) {
-    const orderItem = await this.orderItemsRepository.findOneBy({ id });
+  async findOrderItemById(id: string): Promise<OrderItem> {
+    const orderItem: OrderItem | null =
+      await this.orderItemsRepository.findOneBy({ id });
     if (!orderItem) throw new NotFoundException("OrderItem not found");
     return orderItem;
   }
 
-  async updatedOrderItem(id: string, updateOrderItemDto: UpdateOrderItemDto) {
-    const orderItemPreloaded = await this.orderItemsRepository.preload({
-      id: id,
-      ...updateOrderItemDto,
-    });
+  async updatedOrderItem(
+    id: string,
+    updateOrderItemDto: UpdateOrderItemDto,
+  ): Promise<OrderItem> {
+    const orderItemPreloaded: OrderItem | undefined =
+      await this.orderItemsRepository.preload({
+        id: id,
+        ...updateOrderItemDto,
+      });
 
     if (!orderItemPreloaded) throw new NotFoundException("OrderItem not found");
 
     return await this.orderItemsRepository.save(orderItemPreloaded);
   }
 
-  async deleteOrderItem(id: string) {
+  async deleteOrderItem(id: string): Promise<OrderItem> {
     const orderItem = await this.orderItemsRepository.findOneBy({ id });
     if (!orderItem) throw new NotFoundException("orderItem not found");
 

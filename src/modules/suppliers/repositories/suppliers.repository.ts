@@ -17,16 +17,20 @@ export class SuppliersRepository {
     private readonly supplierRepository: Repository<Supplier>,
   ) {}
 
-  async createSupplier(createSupplierDto: CreateSupplierDto, product: Product) {
-    const supplierExists = await this.supplierRepository.findOneBy({
-      products: {
-        id: product.id,
-      },
-    });
+  async createSupplier(
+    createSupplierDto: CreateSupplierDto,
+    product: Product,
+  ): Promise<Supplier> {
+    const supplierExists: Supplier | null =
+      await this.supplierRepository.findOneBy({
+        products: {
+          id: product.id,
+        },
+      });
 
     if (supplierExists) throw new ConflictException("Supplier already exists");
 
-    const supplierCreated = this.supplierRepository.create({
+    const supplierCreated: Supplier = this.supplierRepository.create({
       ...createSupplierDto,
       products: [product],
     });
@@ -34,42 +38,50 @@ export class SuppliersRepository {
     return await this.supplierRepository.save(supplierCreated);
   }
 
-  async findAllSuppliers() {
-    const suppliers = await this.supplierRepository.find();
+  async findAllSuppliers(): Promise<Supplier[]> {
+    const suppliers: Supplier[] = await this.supplierRepository.find();
     if (!suppliers || suppliers.length === 0)
       throw new NotFoundException("No suppliers found");
 
     return suppliers;
   }
 
-  async findSupplierById(id: string) {
-    const supplier = await this.supplierRepository.findOneBy({ id });
+  async findSupplierById(id: string): Promise<Supplier> {
+    const supplier: Supplier | null = await this.supplierRepository.findOneBy({
+      id,
+    });
     if (!supplier) throw new NotFoundException("Supplier not founds");
 
     return supplier;
   }
 
-  async findSuppliersByIds(ids: string[]) {
-    const suppliers = await this.supplierRepository.findByIds(ids);
+  async findSuppliersByIds(ids: string[]): Promise<Supplier[]> {
+    const suppliers: Supplier[] = await this.supplierRepository.findByIds(ids);
     if (!suppliers || suppliers.length === 0)
       throw new NotFoundException("Suppliers not founds");
 
     return suppliers;
   }
 
-  async updatedSupplier(id: string, updateSupplierDto: UpdateSupplierDto) {
-    const supplierPreloaded = await this.supplierRepository.preload({
-      id,
-      ...updateSupplierDto,
-    });
+  async updatedSupplier(
+    id: string,
+    updateSupplierDto: UpdateSupplierDto,
+  ): Promise<Supplier> {
+    const supplierPreloaded: Supplier | undefined =
+      await this.supplierRepository.preload({
+        id,
+        ...updateSupplierDto,
+      });
 
     if (!supplierPreloaded) throw new NotFoundException("Supplier not found");
 
     return await this.supplierRepository.save(supplierPreloaded);
   }
 
-  async deleteSupplier(id: string) {
-    const supplier = await this.supplierRepository.findOneBy({ id });
+  async deleteSupplier(id: string): Promise<Supplier> {
+    const supplier: Supplier | null = await this.supplierRepository.findOneBy({
+      id,
+    });
     if (!supplier) throw new NotFoundException("Supplier not found");
 
     await this.supplierRepository.delete(id);

@@ -4,6 +4,7 @@ import { UpdateOrderItemDto } from "./dto/update-order-item.dto";
 import { OrderItemsRepository } from "./repositories/order-items.repository";
 import { OrdersRepository } from "../orders/repositories/orders.repository";
 import { ProductsRepository } from "../products/repositories/products.repository";
+import { OrderItem } from "./entities/order-item.entity";
 
 @Injectable()
 export class OrderItemsService {
@@ -13,7 +14,7 @@ export class OrderItemsService {
     private readonly orderRepository: OrdersRepository,
   ) {}
 
-  async create(createOrderItemDto: CreateOrderItemDto) {
+  async create(createOrderItemDto: CreateOrderItemDto): Promise<OrderItem> {
     if (!createOrderItemDto)
       throw new BadRequestException("Data ordemItem is required");
 
@@ -25,16 +26,19 @@ export class OrderItemsService {
     return this.repository.createOrderItem(createOrderItemDto, product, order);
   }
 
-  async findAll() {
+  async findAll(): Promise<OrderItem[]> {
     return this.repository.findAllOrderItems();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<OrderItem> {
     if (!id) throw new BadRequestException("Id is required");
     return this.repository.findOrderItemById(id);
   }
 
-  async update(id: string, updateOrderItemDto: UpdateOrderItemDto) {
+  async update(
+    id: string,
+    updateOrderItemDto: UpdateOrderItemDto,
+  ): Promise<OrderItem> {
     if (!id) throw new BadRequestException("Id is required");
     if (!updateOrderItemDto)
       throw new BadRequestException("Data orderItem is required");
@@ -42,7 +46,7 @@ export class OrderItemsService {
     return this.repository.updatedOrderItem(id, updateOrderItemDto);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<OrderItem> {
     if (!id) throw new BadRequestException("Id is required");
     return this.repository.deleteOrderItem(id);
   }

@@ -4,8 +4,6 @@ import { InventoryMovement } from "../entities/inventory-movement.entity";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateInventoryMovementDto } from "../dto/update-inventory-movement.dto";
 import { CreateInventoryMovementDto } from "../dto/create-inventory-movement.dto";
-import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
-import { ProductsRepository } from "src/modules/products/repositories/products.repository";
 import { Product } from "src/modules/products/entities/product.entity";
 import { Order } from "src/modules/orders/entities/order.entity";
 
@@ -13,16 +11,14 @@ export class InventoryMovementsRepository {
   constructor(
     @InjectRepository(InventoryMovement)
     private readonly inventoryMovementRepository: Repository<InventoryMovement>,
-    private readonly orderRepository: OrdersRepository,
-    private readonly productRepository: ProductsRepository,
   ) {}
 
   async createInventoryMovement(
     createInventoryMovementDto: CreateInventoryMovementDto,
     order: Order,
     product: Product,
-  ) {
-    const inventoryMovementExists =
+  ): Promise<InventoryMovement> {
+    const inventoryMovementExists: InventoryMovement | null =
       await this.inventoryMovementRepository.findOne({
         where: {
           order: { id: order.id },
@@ -34,19 +30,21 @@ export class InventoryMovementsRepository {
     if (inventoryMovementExists)
       throw new ConflictException("InventoryMovements already exists");
 
-    const inventoryMovementCreated = this.inventoryMovementRepository.create({
-      ...createInventoryMovementDto,
-      order: order,
-      product: product,
-    });
+    const inventoryMovementCreated: InventoryMovement =
+      this.inventoryMovementRepository.create({
+        ...createInventoryMovementDto,
+        order: order,
+        product: product,
+      });
 
     return await this.inventoryMovementRepository.save(
       inventoryMovementCreated,
     );
   }
 
-  async findAllInventoryMovements() {
-    const inventoryMovements = await this.inventoryMovementRepository.find();
+  async findAllInventoryMovements(): Promise<InventoryMovement[]> {
+    const inventoryMovements: InventoryMovement[] =
+      await this.inventoryMovementRepository.find();
 
     if (!inventoryMovements || inventoryMovements.length === 0)
       throw new NotFoundException("InventoryMovements not found");
@@ -54,10 +52,11 @@ export class InventoryMovementsRepository {
     return inventoryMovements;
   }
 
-  async findInventoryMovementById(id: string) {
-    const inventoryMovement = await this.inventoryMovementRepository.findOneBy({
-      id,
-    });
+  async findInventoryMovementById(id: string): Promise<InventoryMovement> {
+    const inventoryMovement: InventoryMovement | null =
+      await this.inventoryMovementRepository.findOneBy({
+        id,
+      });
 
     if (!inventoryMovement)
       throw new NotFoundException("InventoryMovement not found");
@@ -68,11 +67,12 @@ export class InventoryMovementsRepository {
   async updatedInventoryMovement(
     id: string,
     updateInventoryMovementDto: UpdateInventoryMovementDto,
-  ) {
-    const inventoryMovement = await this.inventoryMovementRepository.preload({
-      id,
-      ...updateInventoryMovementDto,
-    });
+  ): Promise<InventoryMovement> {
+    const inventoryMovement: InventoryMovement | undefined =
+      await this.inventoryMovementRepository.preload({
+        id,
+        ...updateInventoryMovementDto,
+      });
 
     if (!inventoryMovement)
       throw new NotFoundException("InventoryMovement not found");
@@ -80,10 +80,11 @@ export class InventoryMovementsRepository {
     return this.inventoryMovementRepository.save(inventoryMovement);
   }
 
-  async deleteInventoryMovement(id: string) {
-    const inventoryMovement = await this.inventoryMovementRepository.findOneBy({
-      id,
-    });
+  async deleteInventoryMovement(id: string): Promise<InventoryMovement> {
+    const inventoryMovement: InventoryMovement | null =
+      await this.inventoryMovementRepository.findOneBy({
+        id,
+      });
     if (!inventoryMovement)
       throw new NotFoundException("InventoryMovement not found");
 

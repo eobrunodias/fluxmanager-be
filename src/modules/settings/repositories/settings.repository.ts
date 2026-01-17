@@ -12,8 +12,11 @@ export class SettingsRepository {
     private readonly settingRepository: Repository<Setting>,
   ) {}
 
-  async createSetting(createSettingDto: CreateSettingDto, user: User) {
-    const settingExists = await this.settingRepository.findOne({
+  async createSetting(
+    createSettingDto: CreateSettingDto,
+    user: User,
+  ): Promise<Setting> {
+    const settingExists: Setting | null = await this.settingRepository.findOne({
       where: { user: { id: user.id } },
     });
 
@@ -21,7 +24,7 @@ export class SettingsRepository {
       throw new ConflictException("Setting already exists for this user");
     }
 
-    const settingCreated = this.settingRepository.create({
+    const settingCreated: Setting = this.settingRepository.create({
       ...createSettingDto,
       user: user,
     });
@@ -29,34 +32,42 @@ export class SettingsRepository {
     return await this.settingRepository.save(settingCreated);
   }
 
-  async findAllSettings() {
-    const settings = await this.settingRepository.find();
+  async findAllSettings(): Promise<Setting[]> {
+    const settings: Setting[] = await this.settingRepository.find();
     if (!settings || settings.length === 0)
       throw new NotFoundException("No settings found");
 
     return settings;
   }
 
-  async findSettingById(id: string) {
-    const setting = await this.settingRepository.findOneBy({ id });
+  async findSettingById(id: string): Promise<Setting> {
+    const setting: Setting | null = await this.settingRepository.findOneBy({
+      id,
+    });
     if (!setting) throw new NotFoundException("Setting not found");
 
     return setting;
   }
 
-  async updatedSetting(id: string, updateSettingDto: UpdateSettingDto) {
-    const settingPreloaded = await this.settingRepository.preload({
-      id,
-      ...updateSettingDto,
-    });
+  async updatedSetting(
+    id: string,
+    updateSettingDto: UpdateSettingDto,
+  ): Promise<Setting> {
+    const settingPreloaded: Setting | undefined =
+      await this.settingRepository.preload({
+        id,
+        ...updateSettingDto,
+      });
 
     if (!settingPreloaded) throw new NotFoundException("Setting not found");
 
     return await this.settingRepository.save(settingPreloaded);
   }
 
-  async deleteSetting(id: string) {
-    const setting = await this.settingRepository.findOneBy({ id });
+  async deleteSetting(id: string): Promise<Setting> {
+    const setting: Setting | null = await this.settingRepository.findOneBy({
+      id,
+    });
     if (!setting) throw new NotFoundException("Setting not found");
 
     await this.settingRepository.delete(setting);

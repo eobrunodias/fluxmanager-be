@@ -22,4 +22,12 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  orderIds: string;
+
+  @IsNotEmpty()
+  @IsString()
+  settingId: string;
 }

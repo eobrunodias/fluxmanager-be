@@ -19,9 +19,8 @@ export class UsersController {
 
   @ApiProperty({ example: "John Doe", description: "Name of the user" })
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    const newCreated = await this.usersService.create(createUserDto);
-    if (newCreated) return newCreated;
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()

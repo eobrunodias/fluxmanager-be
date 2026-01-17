@@ -11,8 +11,8 @@ export class ClientsRepository {
     private readonly repository: Repository<Client>,
   ) {}
 
-  async createClient(createClientDto: CreateClientDto) {
-    const existingClient = await this.repository.findOneBy({
+  async createClient(createClientDto: CreateClientDto): Promise<Client> {
+    const existingClient: Client | null = await this.repository.findOneBy({
       email: createClientDto.email,
     });
     if (existingClient) throw new NotFoundException("Email already exists");
@@ -22,23 +22,26 @@ export class ClientsRepository {
     return await this.repository.save(client);
   }
 
-  async findAllClients() {
-    const clients = await this.repository.find();
+  async findAllClients(): Promise<Client[]> {
+    const clients: Client[] = await this.repository.find();
     if (!clients || clients.length === 0)
       throw new NotFoundException("Clients not found");
 
     return clients;
   }
 
-  async findClientById(id: string) {
-    const client = await this.repository.findOneBy({ id });
+  async findClientById(id: string): Promise<Client> {
+    const client: Client | null = await this.repository.findOneBy({ id });
     if (!client) throw new NotFoundException("Client not found");
 
     return client;
   }
 
-  async updatedClient(id: string, updatedClientDto: UpdateClientDto) {
-    const clientPreloaded = await this.repository.preload({
+  async updatedClient(
+    id: string,
+    updatedClientDto: UpdateClientDto,
+  ): Promise<Client> {
+    const clientPreloaded: Client | undefined = await this.repository.preload({
       id,
       ...updatedClientDto,
     });
@@ -48,8 +51,8 @@ export class ClientsRepository {
     return await this.repository.save(clientPreloaded);
   }
 
-  async deleteClient(id: string) {
-    const client = await this.repository.findOneBy({ id });
+  async deleteClient(id: string): Promise<Client> {
+    const client: Client | null = await this.repository.findOneBy({ id });
     if (!client) throw new NotFoundException("Client not found");
 
     await this.repository.delete({ id });
