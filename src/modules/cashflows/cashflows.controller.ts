@@ -11,6 +11,7 @@ import {
 import { CashflowsService } from "./cashflows.service";
 import { CreateCashflowsDto } from "./dto/create-cashflows.dto";
 import { UpdateCashflowsDto } from "./dto/update-cashflows.dto";
+import { Cashflow } from "./entities/cashflow.entity";
 
 @Controller("cashflow")
 export class CashflowsController {
@@ -20,17 +21,17 @@ export class CashflowsController {
   create(
     @Body() createCashflowDto: CreateCashflowsDto,
     @Body("orderId") orderId: string,
-  ) {
+  ): Promise<Cashflow> {
     return this.cashflowService.create(createCashflowDto, orderId);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<Cashflow[]> {
     return this.cashflowService.findAll();
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id") id: string): Promise<Cashflow> {
     return this.cashflowService.findOne(id);
   }
 
@@ -38,12 +39,12 @@ export class CashflowsController {
   update(
     @Param("id") id: string,
     @Body() updateCashflowDto: UpdateCashflowsDto,
-  ) {
+  ): Promise<Cashflow> {
     return this.cashflowService.update(id, updateCashflowDto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
+  remove(@Param("id") id: string): Promise<Cashflow> {
     return this.cashflowService.remove(id);
   }
 }

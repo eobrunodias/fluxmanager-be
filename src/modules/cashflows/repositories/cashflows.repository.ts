@@ -12,10 +12,14 @@ export class CashflowsRepository {
     private readonly cashflowRepository: Repository<Cashflow>,
   ) {}
 
-  async createCashflow(createCashflowsDto: CreateCashflowsDto, order: Order) {
-    const cashflowExists = await this.cashflowRepository.findOne({
-      where: { order: { id: order.id } },
-    });
+  async createCashflow(
+    createCashflowsDto: CreateCashflowsDto,
+    order: Order,
+  ): Promise<Cashflow> {
+    const cashflowExists: Cashflow | null =
+      await this.cashflowRepository.findOne({
+        where: { order: { id: order.id } },
+      });
 
     if (cashflowExists) {
       throw new ConflictException("Cashflow already exists for this order");
@@ -29,31 +33,43 @@ export class CashflowsRepository {
     return await this.cashflowRepository.save(cashflowCreated);
   }
 
-  async findAllCashflows() {
-    const cashflows = await this.cashflowRepository.find();
+  async findAllCashflows(): Promise<Cashflow[]> {
+    const cashflows: Cashflow[] | null = await this.cashflowRepository.find();
     if (!cashflows || cashflows.length === 0)
       throw new NotFoundException("Cashflows not found");
     return cashflows;
   }
 
-  async findCashflowById(id: string) {
-    const cashflow = await this.cashflowRepository.findOneBy({ id });
+  async findCashflowById(id: string): Promise<Cashflow> {
+    const cashflow: Cashflow | null = await this.cashflowRepository.findOneBy({
+      id,
+    });
     if (!cashflow) throw new NotFoundException("Cashflow not found");
     return cashflow;
   }
 
-  async updatedCashflow(id: string, updateCashflow: UpdateCashflowsDto) {
-    const cashflowPreloaded = await this.cashflowRepository.preload({
-      id,
-      ...updateCashflow,
-    });
+  async updatedCashflow(
+    id: string,
+    updateCashflow: UpdateCashflowsDto,
+  ): Promise<Cashflow> {
+    const cashflowPreloaded: Cashflow | undefined =
+      await this.cashflowRepository.preload({
+        id,
+        ...updateCashflow,
+      });
 
     if (!cashflowPreloaded) throw new NotFoundException("Cashflow not found");
     return await this.cashflowRepository.save(cashflowPreloaded);
   }
 
-  async deleteCashflow(id: string) {
-    const cashflowDeleted = await this.cashflowRepository.delete({ id });
-    return cashflowDeleted;
+  async deleteCashflow(id: string): Promise<Cashflow> {
+    const cashflow: Cashflow | null = await this.cashflowRepository.findOneBy({
+      id,
+    });
+    if (!cashflow) throw new NotFoundException("Cashflow not found");
+
+    await this.cashflowRepository.delete({ id });
+
+    return cashflow;
   }
 }
