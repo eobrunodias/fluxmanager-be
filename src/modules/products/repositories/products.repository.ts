@@ -1,29 +1,24 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Product } from "../entities/product.entity";
-import { NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { UpdateProductDto } from "../dto/update-product.dto";
 import { CreateProductDto } from "../dto/create-product.dto";
-import { SuppliersRepository } from "src/modules/suppliers/repositories/suppliers.repository";
-import { CategoriesRepository } from "src/modules/categories/repositories/categories.repository";
+import { Supplier } from "src/modules/suppliers/entities/supplier.entity";
+import { Category } from "src/modules/categories/entities/category.entity";
 
+@Injectable()
 export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    private readonly supplierRepository: SuppliersRepository,
-    private readonly categoryRepository: CategoriesRepository,
   ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
-    supplierIds: string[],
-    categoryId: string,
+    suppliers: Supplier[],
+    category: Category,
   ) {
-    const category = await this.categoryRepository.findCategoryById(categoryId);
-    const suppliers =
-      await this.supplierRepository.findSuppliersByIds(supplierIds);
-
     const productExists = await this.productRepository.findOneBy({
       sku: createProductDto.sku,
     });

@@ -4,20 +4,17 @@ import { Stock } from "../entities/stock.entity";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateStockDto } from "../dto/update-stock.dto";
 import { CreateStockDto } from "../dto/create-stock.dto";
-import { ProductsRepository } from "src/modules/products/repositories/products.repository";
+import { Product } from "src/modules/products/entities/product.entity";
 
 export class StockRepository {
   constructor(
     @InjectRepository(Stock)
     private readonly stockRepository: Repository<Stock>,
-    private readonly productRepository: ProductsRepository,
   ) {}
 
-  async createStock(createStockDto: CreateStockDto, productId: string) {
-    const product = await this.productRepository.findProductById(productId);
-
+  async createStock(createStockDto: CreateStockDto, product: Product) {
     const existingStock = await this.stockRepository.findOneBy({
-      product: { id: productId },
+      product: { id: product.id },
     });
     if (existingStock)
       throw new ConflictException("Stock for this product already exists");

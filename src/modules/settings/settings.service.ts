@@ -2,17 +2,23 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateSettingDto } from "./dto/create-setting.dto";
 import { UpdateSettingDto } from "./dto/update-setting.dto";
 import { SettingsRepository } from "./repositories/settings.repository";
+import { UsersRepository } from "../users/repositories/users.repository";
 
 @Injectable()
 export class SettingsService {
-  constructor(private readonly repository: SettingsRepository) {}
+  constructor(
+    private readonly repository: SettingsRepository,
+    private readonly userRepository: UsersRepository,
+  ) {}
 
   async create(createSettingDto: CreateSettingDto, userId: string) {
     if (!createSettingDto)
       throw new BadRequestException("Invalid setting data");
     if (!userId) throw new BadRequestException("User ID is required");
 
-    return await this.repository.createSetting(createSettingDto, userId);
+    const user = await this.userRepository.findUserById(userId);
+
+    return await this.repository.createSetting(createSettingDto, user);
   }
 
   async findAll() {

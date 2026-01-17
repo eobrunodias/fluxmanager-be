@@ -4,24 +4,21 @@ import { Repository } from "typeorm";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateSettingDto } from "../dto/update-setting.dto";
 import { CreateSettingDto } from "../dto/create-setting.dto";
-import { UsersRepository } from "src/modules/users/repositories/users.repository";
+import { User } from "src/modules/users/entities/user.entity";
 
 export class SettingsRepository {
   constructor(
     @InjectRepository(Setting)
     private readonly settingRepository: Repository<Setting>,
-    private readonly userRepository: UsersRepository,
   ) {}
 
-  async createSetting(createSettingDto: CreateSettingDto, userId: string) {
-    const user = await this.userRepository.findUserById(userId);
-
+  async createSetting(createSettingDto: CreateSettingDto, user: User) {
     const settingExists = await this.settingRepository.findOne({
-      where: { user: { id: userId } },
+      where: { user: { id: user.id } },
     });
 
     if (settingExists) {
-      throw new ConflictException("Cashflow already exists for this order");
+      throw new ConflictException("Setting already exists for this user");
     }
 
     const settingCreated = this.settingRepository.create({

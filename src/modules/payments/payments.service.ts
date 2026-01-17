@@ -2,17 +2,23 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreatePaymentDto } from "./dto/create-payment.dto";
 import { UpdatePaymentDto } from "./dto/update-payment.dto";
 import { PaymentsRepository } from "./repositories/payments.repository";
+import { OrdersRepository } from "../orders/repositories/orders.repository";
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly repository: PaymentsRepository) {}
+  constructor(
+    private readonly repository: PaymentsRepository,
+    private readonly orderRepository: OrdersRepository,
+  ) {}
 
   async create(createPaymentDto: CreatePaymentDto, orderId: string) {
     if (!orderId) throw new BadRequestException("orderId is required");
     if (!createPaymentDto)
       throw new BadRequestException("Data payment is required");
 
-    return this.repository.createPayment(createPaymentDto, orderId);
+    const order = await this.orderRepository.findOrderById(orderId);
+
+    return this.repository.createPayment(createPaymentDto, order);
   }
 
   async findAll() {

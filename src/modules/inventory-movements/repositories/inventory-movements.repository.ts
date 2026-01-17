@@ -1,11 +1,13 @@
-import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 import { InventoryMovement } from "../entities/inventory-movement.entity";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdateInventoryMovementDto } from "../dto/update-inventory-movement.dto";
 import { CreateInventoryMovementDto } from "../dto/create-inventory-movement.dto";
 import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
 import { ProductsRepository } from "src/modules/products/repositories/products.repository";
+import { Product } from "src/modules/products/entities/product.entity";
+import { Order } from "src/modules/orders/entities/order.entity";
 
 export class InventoryMovementsRepository {
   constructor(
@@ -17,17 +19,14 @@ export class InventoryMovementsRepository {
 
   async createInventoryMovement(
     createInventoryMovementDto: CreateInventoryMovementDto,
-    orderId: string,
-    productId: string,
+    order: Order,
+    product: Product,
   ) {
-    const order = await this.orderRepository.findOrderById(orderId);
-    const product = await this.productRepository.findProductById(productId);
-
     const inventoryMovementExists =
       await this.inventoryMovementRepository.findOne({
         where: {
-          order: { id: orderId },
-          product: { id: productId },
+          order: { id: order.id },
+          product: { id: product.id },
         },
         relations: ["order", "product"],
       });

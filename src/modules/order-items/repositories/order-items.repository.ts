@@ -1,32 +1,27 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { OrderItem } from "../entities/order-item.entity";
 import { Repository } from "typeorm";
-import { ProductsRepository } from "src/modules/products/repositories/products.repository";
-import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
 import { NotFoundException } from "@nestjs/common";
 import { UpdateOrderItemDto } from "../dto/update-order-item.dto";
 import { CreateOrderItemDto } from "../dto/create-order-item.dto";
+import { Product } from "src/modules/products/entities/product.entity";
+import { Order } from "src/modules/orders/entities/order.entity";
 
 export class OrderItemsRepository {
   constructor(
     @InjectRepository(OrderItem)
     private readonly orderItemsRepository: Repository<OrderItem>,
-    private readonly productRepository: ProductsRepository,
-    private readonly orderRepository: OrdersRepository,
   ) {}
 
   async createOrderItem(
     createOrderItemDto: CreateOrderItemDto,
-    productId: string,
-    orderId: string,
+    product: Product,
+    order: Order,
   ) {
-    const product = await this.productRepository.findProductById(productId);
-    const order = await this.orderRepository.findOrderById(orderId);
-
     const orderItemExists = await this.orderItemsRepository.findOne({
       where: {
-        product: { id: productId },
-        order: { id: orderId },
+        product: { id: product.id },
+        order: { id: order.id },
       },
       relations: ["product", "order"],
     });

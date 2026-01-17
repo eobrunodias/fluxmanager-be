@@ -3,24 +3,24 @@ import { Supplier } from "../entities/supplier.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateSupplierDto } from "../dto/create-supplier.dto";
 import { UpdateSupplierDto } from "../dto/update-supplier.dto";
-import { ConflictException, NotFoundException } from "@nestjs/common";
-import { ProductsRepository } from "src/modules/products/repositories/products.repository";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { Product } from "src/modules/products/entities/product.entity";
 
+@Injectable()
 export class SuppliersRepository {
   constructor(
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
-
-    private readonly productRepository: ProductsRepository,
   ) {}
 
-  async createSupplier(
-    createSupplierDto: CreateSupplierDto,
-    productId: string,
-  ) {
+  async createSupplier(createSupplierDto: CreateSupplierDto, product: Product) {
     const supplierExists = await this.supplierRepository.findOneBy({
       products: {
-        id: productId,
+        id: product.id,
       },
     });
 
@@ -28,7 +28,7 @@ export class SuppliersRepository {
 
     const supplierCreated = this.supplierRepository.create({
       ...createSupplierDto,
-      products: [produto],
+      products: [product],
     });
 
     return await this.supplierRepository.save(supplierCreated);

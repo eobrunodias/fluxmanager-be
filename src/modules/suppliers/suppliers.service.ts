@@ -2,26 +2,32 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateSupplierDto } from "./dto/create-supplier.dto";
 import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { SuppliersRepository } from "./repositories/suppliers.repository";
+import { ProductsRepository } from "../products/repositories/products.repository";
 
 @Injectable()
 export class SuppliersService {
-  constructor(private readonly repository: SuppliersRepository) {}
+  constructor(
+    private readonly supplierRepository: SuppliersRepository,
+    private readonly productRepository: ProductsRepository,
+  ) {}
 
   async create(createSupplierDto: CreateSupplierDto, productId: string) {
     if (!createSupplierDto)
       throw new BadRequestException("Invalid supplier data");
     if (!productId) throw new BadRequestException("productId is invalid");
 
-    return this.repository.createSupplier(createSupplierDto, productId);
+    const product = await this.productRepository.findProductById(productId);
+
+    return this.supplierRepository.createSupplier(createSupplierDto, product);
   }
 
   async findAll() {
-    return this.repository.findAllSuppliers();
+    return this.supplierRepository.findAllSuppliers();
   }
 
   async findOne(id: string) {
     if (!id) throw new BadRequestException("Id is required");
-    return this.repository.findSupplierById(id);
+    return this.supplierRepository.findSupplierById(id);
   }
 
   async update(id: string, updateSupplierDto: UpdateSupplierDto) {
@@ -29,11 +35,11 @@ export class SuppliersService {
     if (!updateSupplierDto)
       throw new BadRequestException("Body data supplier is required");
 
-    return this.repository.updatedSupplier(id, updateSupplierDto);
+    return this.supplierRepository.updatedSupplier(id, updateSupplierDto);
   }
 
   async remove(id: string) {
     if (!id) throw new BadRequestException("Id is required");
-    return this.repository.findSupplierById(id);
+    return this.supplierRepository.findSupplierById(id);
   }
 }

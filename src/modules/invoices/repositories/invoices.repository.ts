@@ -4,20 +4,17 @@ import { Repository } from "typeorm";
 import { UpdateInvoiceDto } from "../dto/update-invoice.dto";
 import { CreateInvoiceDto } from "../dto/create-invoice.dto";
 import { ConflictException, NotFoundException } from "@nestjs/common";
-import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
+import { Order } from "src/modules/orders/entities/order.entity";
 
 export class InvoicesRepository {
   constructor(
     @InjectRepository(Invoice)
     private readonly invoiceRepository: Repository<Invoice>,
-    private readonly orderRepository: OrdersRepository,
   ) {}
 
-  async createInvoice(createInvoiceDto: CreateInvoiceDto, orderId: string) {
-    const order = await this.orderRepository.findOrderById(orderId);
-
+  async createInvoice(createInvoiceDto: CreateInvoiceDto, order: Order) {
     const invoiceExists = await this.invoiceRepository.findOneBy({
-      order: { id: orderId },
+      order: { id: order.id },
     });
     if (invoiceExists) throw new ConflictException("Invoice already exists");
 

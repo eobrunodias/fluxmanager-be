@@ -4,20 +4,17 @@ import { Repository } from "typeorm";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { UpdatePaymentDto } from "../dto/update-payment.dto";
 import { CreatePaymentDto } from "../dto/create-payment.dto";
-import { OrdersRepository } from "src/modules/orders/repositories/orders.repository";
+import { Order } from "src/modules/orders/entities/order.entity";
 
 export class PaymentsRepository {
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
-    private readonly orderRepository: OrdersRepository,
   ) {}
 
-  async createPayment(createPaymentDto: CreatePaymentDto, orderId: string) {
-    const order = await this.orderRepository.findOrderById(orderId);
-
+  async createPayment(createPaymentDto: CreatePaymentDto, order: Order) {
     const paymentExists = await this.paymentRepository.findOne({
-      where: { order: { id: orderId } },
+      where: { order: { id: order.id } },
     });
 
     if (paymentExists) {

@@ -2,10 +2,16 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateInventoryMovementDto } from "./dto/create-inventory-movement.dto";
 import { UpdateInventoryMovementDto } from "./dto/update-inventory-movement.dto";
 import { InventoryMovementsRepository } from "./repositories/inventory-movements.repository";
+import { ProductsRepository } from "../products/repositories/products.repository";
+import { OrdersRepository } from "../orders/repositories/orders.repository";
 
 @Injectable()
 export class InventoryMovementsService {
-  constructor(private readonly repository: InventoryMovementsRepository) {}
+  constructor(
+    private readonly repository: InventoryMovementsRepository,
+    private readonly orderRepository: OrdersRepository,
+    private readonly productRepository: ProductsRepository,
+  ) {}
 
   async create(createInventoryMovementDto: CreateInventoryMovementDto) {
     if (!createInventoryMovementDto)
@@ -13,10 +19,13 @@ export class InventoryMovementsService {
 
     const { orderId, productId } = createInventoryMovementDto;
 
+    const order = await this.orderRepository.findOrderById(orderId);
+    const product = await this.productRepository.findProductById(productId);
+
     return this.repository.createInventoryMovement(
       createInventoryMovementDto,
-      orderId,
-      productId,
+      order,
+      product,
     );
   }
 

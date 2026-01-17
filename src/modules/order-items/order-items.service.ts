@@ -2,10 +2,16 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateOrderItemDto } from "./dto/create-order-item.dto";
 import { UpdateOrderItemDto } from "./dto/update-order-item.dto";
 import { OrderItemsRepository } from "./repositories/order-items.repository";
+import { OrdersRepository } from "../orders/repositories/orders.repository";
+import { ProductsRepository } from "../products/repositories/products.repository";
 
 @Injectable()
 export class OrderItemsService {
-  constructor(private readonly repository: OrderItemsRepository) {}
+  constructor(
+    private readonly repository: OrderItemsRepository,
+    private readonly productRepository: ProductsRepository,
+    private readonly orderRepository: OrdersRepository,
+  ) {}
 
   async create(createOrderItemDto: CreateOrderItemDto) {
     if (!createOrderItemDto)
@@ -13,11 +19,10 @@ export class OrderItemsService {
 
     const { productId, orderId } = createOrderItemDto;
 
-    return this.repository.createOrderItem(
-      createOrderItemDto,
-      productId,
-      orderId,
-    );
+    const product = await this.productRepository.findProductById(productId);
+    const order = await this.orderRepository.findOrderById(orderId);
+
+    return this.repository.createOrderItem(createOrderItemDto, product, order);
   }
 
   async findAll() {

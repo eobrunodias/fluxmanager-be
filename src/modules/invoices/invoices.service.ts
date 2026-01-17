@@ -2,17 +2,23 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
 import { UpdateInvoiceDto } from "./dto/update-invoice.dto";
 import { InvoicesRepository } from "./repositories/invoices.repository";
+import { OrdersRepository } from "../orders/repositories/orders.repository";
 
 @Injectable()
 export class InvoicesService {
-  constructor(private readonly invoiceRepository: InvoicesRepository) {}
+  constructor(
+    private readonly invoiceRepository: InvoicesRepository,
+    private readonly orderRepository: OrdersRepository,
+  ) {}
 
   async create(createInvoiceDto: CreateInvoiceDto, orderId: string) {
     if (!createInvoiceDto)
       throw new BadRequestException("Data invoice is required");
     if (!orderId) throw new BadRequestException("orderId is required");
 
-    return this.invoiceRepository.createInvoice(createInvoiceDto, orderId);
+    const order = await this.orderRepository.findOrderById(orderId);
+
+    return this.invoiceRepository.createInvoice(createInvoiceDto, order);
   }
 
   async findAll() {
